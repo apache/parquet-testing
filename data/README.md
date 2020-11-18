@@ -18,7 +18,24 @@
   -->
 # Test data files for Parquet compatibility and regression testing
 
-TODO: Document what each file is
+
+## 10k-v2.parquet
+This file consists of 10k rows written in v2 page format with this type:
+
+```
+message test {
+  required binary binary_field,
+  required int32 int32_field,
+  required int64 int64_field,
+  required boolean boolean_field,
+  required float float_field,
+  required double double_field,
+  required fixed_len_byte_array(1024) flba_field,
+  required int96 int96_field
+}
+```
+
+Filled with random values. It is used for performance benchmarks.
 
 ## Encrypted Files
 
