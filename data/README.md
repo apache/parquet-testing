@@ -37,6 +37,14 @@ message test {
 
 Filled with random values. It is used for performance benchmarks.
 
+Originally from https://github.com/sunchao/parquet-rs/blob/master/data/10k-v2.parquet
+
+## stock_simulated.parquet
+
+Simulated stock market data, used for performance benchmarks.
+
+Originally from https://github.com/sunchao/parquet-rs/blob/master/data/stock_simulated.parquet
+
 ## Encrypted Files
 
 Tests files with .parquet.encrypted suffix are encrypted using Parquet Modular Encryption.
