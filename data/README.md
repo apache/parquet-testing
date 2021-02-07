@@ -18,7 +18,12 @@
   -->
 # Test data files for Parquet compatibility and regression testing
 
-TODO: Document what each file is
+| File  | Description |
+|---|---|
+| nested_structs.rust.parquet  | Used to test that the Rust Arrow reader can lookup the correct field from a nested struct. See [ARROW-11452](https://issues.apache.org/jira/browse/ARROW-11452) |
+
+
+TODO: Document what each file is in the table above.
 
 ## Encrypted Files
 
