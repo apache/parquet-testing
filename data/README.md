@@ -21,6 +21,7 @@
 
 | File  | Description |
 |---|---|
+| delta_byte_array.parquet | string columns with DELTA_BYTE_ARRAY encoding. See [delta_byte_array.md](delta_byte_array.md) for details. |
 | delta_binary_packed.parquet | INT32 and INT64 columns with DELTA_BINARY_PACKED encoding. See [delta_binary_packed.md](delta_binary_packed.md) for details. |
 | nested_structs.rust.parquet | Used to test that the Rust Arrow reader can lookup the correct field from a nested struct. See [ARROW-11452](https://issues.apache.org/jira/browse/ARROW-11452) |
 
