@@ -32,6 +32,9 @@
 | alltypes_tiny_pages.parquet             | small page sizes with dictionary encoding with page index from [impala](https://github.com/apache/impala/tree/master/testdata/data/alltypes_tiny_pages.parquet). |
 | alltypes_tiny_pages_plain.parquet       | small page sizes with plain encoding with page index [impala](https://github.com/apache/impala/tree/master/testdata/data/alltypes_tiny_pages.parquet).           |
 | rle_boolean_encoding.parquet            | option boolean columns with RLE encoding                                                                                                                         |
+| single_column_*{total_rows}*kw_*{row_group_size}*.parquet            | single column parquet file with different total_rows and different row_group_size. Unit of *{row_group_size}*  is KB                                                                                                                          |
+| sc_1kw_multibit_*{bit_width}*.parquet            | parquet file with different different RLE encoded bit width.                                                   |
+
 
 TODO: Document what each file is in the table above.
 
