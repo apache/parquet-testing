@@ -32,6 +32,9 @@
 | alltypes_tiny_pages.parquet             | small page sizes with dictionary encoding with page index from [impala](https://github.com/apache/impala/tree/master/testdata/data/alltypes_tiny_pages.parquet). |
 | alltypes_tiny_pages_plain.parquet       | small page sizes with plain encoding with page index [impala](https://github.com/apache/impala/tree/master/testdata/data/alltypes_tiny_pages.parquet).           |
 | rle_boolean_encoding.parquet            | option boolean columns with RLE encoding                                                                                                                         |
+| datapage_v1-uncompressed-checksum.parquet      | uncompressed INT32 columns in v1 data pages with a matching CRC        |
+| datapage_v1-snappy-compressed-checksum.parquet | compressed INT32 columns in v1 data pages with a matching CRC          |
+| datapage_v1-corrupt-checksum.parquet           | uncompressed INT32 columns in v1 data pages with a mismatching CRC     |
 
 TODO: Document what each file is in the table above.
 
@@ -68,10 +71,7 @@ cpp/src/parquet/test-encryption-util.h
 
 ## Checksum Files
 
-### Flatten
-
-The schema for flatten test files is:
-
+The schema for the `datapage_v1-*-checksum.parquet` test files is:
 ```
 message m {
     required int32 a;
@@ -79,26 +79,22 @@ message m {
 } 
 ```
 
-The files are listed below:
+The detailed structure for these files is as follows:
 
-`data/datapage_v1-uncompressed-checksum.parquet`:
+* `data/datapage_v1-uncompressed-checksum.parquet`:
+  ```
+  [ Column "a" [ Page 0 [correct crc] | Uncompressed Contents ][ Page 1 [correct crc] | Uncompressed Contents ]]
+  [ Column "b" [ Page 0 [correct crc] | Uncompressed Contents ][ Page 1 [correct crc] | Uncompressed Contents ]]
+  ```
 
-```
-[ Column "a" [ Page 0 [bad crc ] | Uncompressed Contents ][ Page 1 [correct crc ] | Uncompressed Contents ]]
-[ Column "b" [ Page 0 [correct crc ] | Uncompressed Contents ][ Page 1 [bad crc ] | Uncompressed Contents ]]
-```
+* `data/datapage_v1-snappy-compressed-checksum.parquet`:
+  ```
+  [ Column "a" [ Page 0 [correct crc] | Snappy Contents ][ Page 1 [correct crc] | Snappy Contents ]]
+  [ Column "b" [ Page 0 [correct crc] | Snappy Contents ][ Page 1 [correct crc] | Snappy Contents ]]
+  ```
 
-`data/datapage_v1-corrupt-checksum.parquet`:
-
-```
-[ Column "a" [ Page 0 [correct crc ] | Uncompressed Contents ][ Page 1 [correct crc ] | Uncompressed Contents ]]
-[ Column "b" [ Page 0 [correct crc ] | Uncompressed Contents ][ Page 1 [correct crc ] | Uncompressed Contents ]]
-```
-
-`data/datapage_v1-snappy-compressed-checksum.parquet`:
-
-```
-[ Column "a" [ Page 0 [correct crc ] | Snappy Contents ][ Page 1 [correct crc ] | Snappy Contents ]]
-[ Column "b" [ Page 0 [correct crc ] | Snappy Contents ][ Page 1 [correct crc ] | Snappy Contents ]]
-```
-
+* `data/datapage_v1-corrupt-checksum.parquet`:
+  ```
+  [ Column "a" [ Page 0 [bad crc] | Uncompressed Contents ][ Page 1 [correct crc] | Uncompressed Contents ]]
+  [ Column "b" [ Page 0 [correct crc] | Uncompressed Contents ][ Page 1 [bad crc] | Uncompressed Contents ]]
+  ```
