@@ -65,3 +65,40 @@ A sample that reads and checks these files can be found at the following tests:
 cpp/src/parquet/encryption-read-configurations-test.cc
 cpp/src/parquet/test-encryption-util.h
 ```
+
+## Checksum Files
+
+### Flatten
+
+The schema for flatten test files is:
+
+```
+message m {
+    required int32 a;
+    required int32 b;
+} 
+```
+
+The files are listed below:
+
+`data/datapage_v1-uncompressed-checksum.parquet`:
+
+```
+[ Column "a" [ Page 0 [bad crc ] | Uncompressed Contents ][ Page 1 [correct crc ] | Uncompressed Contents ]]
+[ Column "b" [ Page 0 [correct crc ] | Uncompressed Contents ][ Page 1 [bad crc ] | Uncompressed Contents ]]
+```
+
+`data/datapage_v1-corrupt-checksum.parquet`:
+
+```
+[ Column "a" [ Page 0 [correct crc ] | Uncompressed Contents ][ Page 1 [correct crc ] | Uncompressed Contents ]]
+[ Column "b" [ Page 0 [correct crc ] | Uncompressed Contents ][ Page 1 [correct crc ] | Uncompressed Contents ]]
+```
+
+`data/datapage_v1-snappy-compressed-checksum.parquet`:
+
+```
+[ Column "a" [ Page 0 [correct crc ] | Snappy Contents ][ Page 1 [correct crc ] | Snappy Contents ]]
+[ Column "b" [ Page 0 [correct crc ] | Snappy Contents ][ Page 1 [correct crc ] | Snappy Contents ]]
+```
+
