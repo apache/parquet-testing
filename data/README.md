@@ -38,6 +38,8 @@
 | datapage_v1-snappy-compressed-checksum.parquet | compressed INT32 columns in v1 data pages with a matching CRC          |
 | datapage_v1-corrupt-checksum.parquet           | uncompressed INT32 columns in v1 data pages with a mismatching CRC     |
 | overflow_i16_page_cnt.parquet                  | row group with more than INT16_MAX pages                   |
+| bloom_filter.bin                               | deprecated bloom filter binary with binary header and murmur3 hashing |
+| bloom_filter.xxhash.bin                        | bloom filter binary with thrift header and xxhash hashing    |
 
 TODO: Document what each file is in the table above.
 
