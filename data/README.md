@@ -40,6 +40,7 @@
 | overflow_i16_page_cnt.parquet                  | row group with more than INT16_MAX pages                   |
 | bloom_filter.bin                               | deprecated bloom filter binary with binary header and murmur3 hashing |
 | bloom_filter.xxhash.bin                        | bloom filter binary with thrift header and xxhash hashing    |
+| nan_in_stats.parquet                           | statistics contains nan in max, from PyArrow 0.8.0. See: https://github.com/apache/parquet-format/pull/185 |
 
 TODO: Document what each file is in the table above.
 
