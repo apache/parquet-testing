@@ -38,9 +38,13 @@
 | datapage_v1-snappy-compressed-checksum.parquet | compressed INT32 columns in v1 data pages with a matching CRC          |
 | datapage_v1-corrupt-checksum.parquet           | uncompressed INT32 columns in v1 data pages with a mismatching CRC     |
 | overflow_i16_page_cnt.parquet                  | row group with more than INT16_MAX pages                   |
+<<<<<<< HEAD
 | bloom_filter.bin                               | deprecated bloom filter binary with binary header and murmur3 hashing |
 | bloom_filter.xxhash.bin                        | bloom filter binary with thrift header and xxhash hashing    |
 | nan_in_stats.parquet                           | statistics contains nan in max, from PyArrow 0.8.0. See: https://github.com/apache/parquet-format/pull/185 |
+=======
+| nan_in_stats.parquet                           | statistics contains NaN in max, from PyArrow 0.8.0. See note below on "NaN in stats".  |
+>>>>>>> ab99cc1 (copy down relevant rules into readme)
 
 TODO: Document what each file is in the table above.
 
@@ -118,3 +122,17 @@ https://github.com/apache/parquet-format/commit/54839ad5e04314c944fed8aa4bc6cf15
 
 `bloom_filter.xxhash.bin` uses the newer xxHash-based bloom filter format as of
 https://github.com/apache/parquet-format/commit/3fb10e00c2204bf1c6cc91e094c59e84cefcee33.
+
+## NaN in stats
+
+Previous versions of the C++ Parquet writer would write NaN values in min and max
+statistics. It has been updated since to ignore NaN values when calculating
+statistics, but for backwards compatibility the following rules were established
+(in [PARQUET-1222](https://github.com/apache/parquet-format/pull/185)):
+
+> For backwards compatibility when reading files:
+> * If the min is a NaN, it should be ignored.
+> * If the max is a NaN, it should be ignored.
+> * If the min is +0, the row group may contain -0 values as well.
+> * If the max is -0, the row group may contain +0 values as well.
+> * When looking for NaN values, min and max should be ignored.
