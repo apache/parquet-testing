@@ -40,6 +40,7 @@
 | overflow_i16_page_cnt.parquet                  | row group with more than INT16_MAX pages                   |
 | bloom_filter.bin                               | deprecated bloom filter binary with binary header and murmur3 hashing |
 | bloom_filter.xxhash.bin                        | bloom filter binary with thrift header and xxhash hashing    |
+| nan_in_stats.parquet                           | statistics contains NaN in max, from PyArrow 0.8.0. See note below on "NaN in stats".  |
 
 TODO: Document what each file is in the table above.
 
@@ -117,3 +118,60 @@ https://github.com/apache/parquet-format/commit/54839ad5e04314c944fed8aa4bc6cf15
 
 `bloom_filter.xxhash.bin` uses the newer xxHash-based bloom filter format as of
 https://github.com/apache/parquet-format/commit/3fb10e00c2204bf1c6cc91e094c59e84cefcee33.
+
+## NaN in stats
+
+Prior to version 1.4.0, the C++ Parquet writer would write NaN values in min and
+max statistics. (Correction in [this issue](https://issues.apache.org/jira/browse/PARQUET-1225)).
+It has been updated since to ignore NaN values when calculating
+statistics, but for backwards compatibility the following rules were established
+(in [PARQUET-1222](https://github.com/apache/parquet-format/pull/185)):
+
+> For backwards compatibility when reading files:
+> * If the min is a NaN, it should be ignored.
+> * If the max is a NaN, it should be ignored.
+> * If the min is +0, the row group may contain -0 values as well.
+> * If the max is -0, the row group may contain +0 values as well.
+> * When looking for NaN values, min and max should be ignored.
+
+The file `nan_in_stats.parquet` was generated with:
+
+```python
+import pyarrow as pa # version 0.8.0
+import pyarrow.parquet as pq
+from numpy import NaN
+
+tab = pa.Table.from_arrays(
+    [pa.array([1.0, NaN])],
+    names="x"
+)
+
+pq.write_table(tab, "nan_in_stats.parquet")
+
+metadata = pq.read_metadata("nan_in_stats.parquet")
+metadata.row_group(0).column(0)
+# <pyarrow._parquet.ColumnChunkMetaData object at 0x7f28539e58f0>
+#   file_offset: 88
+#   file_path: 
+#   type: DOUBLE
+#   num_values: 2
+#   path_in_schema: x
+#   is_stats_set: True
+#   statistics:
+#     <pyarrow._parquet.RowGroupStatistics object at 0x7f28539e5738>
+#       has_min_max: True
+#       min: 1
+#       max: nan
+#       null_count: 0
+#       distinct_count: 0
+#       num_values: 2
+#       physical_type: DOUBLE
+#   compression: 1
+#   encodings: <map object at 0x7f28539eb4e0>
+#   has_dictionary_page: True
+#   dictionary_page_offset: 4
+#   data_page_offset: 36
+#   index_page_offset: 0
+#   total_compressed_size: 84
+#   total_uncompressed_size: 80
+```
