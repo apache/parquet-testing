@@ -75,6 +75,12 @@ cpp/src/parquet/encryption-read-configurations-test.cc
 cpp/src/parquet/test-encryption-util.h
 ```
 
+The `external_key_material_java.parquet.encrypted` file was encrypted using parquet-mr with
+external key material enabled, so the key material is found in the
+`_KEY_MATERIAL_FOR_external_key_material_java.parquet.encrypted.json` file.
+This data was written using the `org.apache.parquet.crypto.keytools.mocks.InMemoryKMS` KMS client,
+which is compatible with the `TestOnlyInServerWrapKms` KMS client used in C++ tests.
+
 ## Checksum Files
 
 The schema for the `datapage_v1-*-checksum.parquet` test files is:
