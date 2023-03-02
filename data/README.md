@@ -41,9 +41,9 @@
 | bloom_filter.bin                               | deprecated bloom filter binary with binary header and murmur3 hashing |
 | bloom_filter.xxhash.bin                        | bloom filter binary with thrift header and xxhash hashing    |
 | nan_in_stats.parquet                           | statistics contains NaN in max, from PyArrow 0.8.0. See note below on "NaN in stats".  |
-| rle-dict-snappy-checksum.parquet                 | compressed INT32 and STRING columns in v2 dictionary pages with a matching CRC |
-| plain-dict-uncompressed-checksum.parquet         | uncompressed INT32 and STRING columns in v1 dictionary pages with a matching CRC |
-| rle-dict-uncompressed-corrupt-checksum.parquet   | uncompressed INT32 and STRING columns in v2 dictionary pages with a mismatching CRC |
+| rle-dict-snappy-checksum.parquet                 | compressed and dictionary-encoded INT32 and STRING columns in format v2 with a matching CRC |
+| plain-dict-uncompressed-checksum.parquet         | uncompressed and dictionary-encoded INT32 and STRING columns in format v1 with a matching CRC |
+| rle-dict-uncompressed-corrupt-checksum.parquet   | uncompressed and dictionary-encoded INT32 and STRING columns in format v2 with a mismatching CRC |
 
 TODO: Document what each file is in the table above.
 
@@ -117,20 +117,20 @@ The detailed structure for these files is as follows:
 The schema for the `*-dict-*-checksum.parquet` test files is:
 * `data/rle-dict-snappy-checksum.parquet`:
   ```
-  [ Column "long_field" [ Dict Index Page [correct crc] | Compressed PLAIN Contents ][ Page 0 [correct crc] | Compressed RLE_DICTIONARY Contents ]]
-  [ Column "binary_field" [Dict Index Page [correct crc] | Compressed PLAIN Contents ][ Page 0 [correct crc] | Compressed RLE_DICTIONARY Contents ]]
+  [ Column "long_field" [ Dict Page [correct crc] | Compressed PLAIN Contents ][ Page 0 [correct crc] | Compressed RLE_DICTIONARY Contents ]]
+  [ Column "binary_field" [ Dict Page [correct crc] | Compressed PLAIN Contents ][ Page 0 [correct crc] | Compressed RLE_DICTIONARY Contents ]]
   ```
 
 * `data/plain-dict-uncompressed-checksum.parquet`:
   ```
-  [ Column "long_field" [ Dict Index Page [correct crc] | Uncompressed PLAIN_DICTIONARY(DICT) Contents ][ Page 0 [correct crc] | Unompressed PLAIN_DICTIONARY Contents ]]
-  [ Column "binary_field" [Dict Index Page [correct crc] | Uncompressed PLAIN_DICTIONARY(DICT) Contents ][ Page 0 [correct crc] | Uncompressed PLAIN_DICTIONARY Contents ]]
+  [ Column "long_field" [ Dict Page [correct crc] | Uncompressed PLAIN_DICTIONARY(DICT) Contents ][ Page 0 [correct crc] | Uncompressed PLAIN_DICTIONARY Contents ]]
+  [ Column "binary_field" [ Dict Page [correct crc] | Uncompressed PLAIN_DICTIONARY(DICT) Contents ][ Page 0 [correct crc] | Uncompressed PLAIN_DICTIONARY Contents ]]
   ```
 
 * `data/rle-dict-uncompressed-corrupt-checksum.parquet`:
   ```
-  [ Column "long_field" [ Dict Index Page [bad crc] | Uncompressed PLAIN Contents ][ Page 0 [correct crc] | Uncompressed RLE_DICTIONARY Contents ]]
-  [ Column "binary_field" [Dict Index Page [bad crc] | Uncompressed PLAIN Contents ][ Page 0 [correct crc] | Uncompressed RLE_DICTIONARY Contents ]]
+  [ Column "long_field" [ Dict Page [bad crc] | Uncompressed PLAIN Contents ][ Page 0 [correct crc] | Uncompressed RLE_DICTIONARY Contents ]]
+  [ Column "binary_field" [ Dict Page [bad crc] | Uncompressed PLAIN Contents ][ Page 0 [correct crc] | Uncompressed RLE_DICTIONARY Contents ]]
   ```
 ## Bloom Filter Files
 
