@@ -44,7 +44,7 @@
 | rle-dict-snappy-checksum.parquet                 | compressed and dictionary-encoded INT32 and STRING columns in format v2 with a matching CRC |
 | plain-dict-uncompressed-checksum.parquet         | uncompressed and dictionary-encoded INT32 and STRING columns in format v1 with a matching CRC |
 | rle-dict-uncompressed-corrupt-checksum.parquet   | uncompressed and dictionary-encoded INT32 and STRING columns in format v2 with a mismatching CRC |
-| chunked_string_map.parquet            | Map(String, int32) containing string that won't fit arrow ByteArray. Asserts arrow::LargeByteArray can read it [Issue](https://github.com/apache/arrow/issues/32723) |
+| chunked_string_map.parquet             | Map(String, int32) containing string that won't fit arrow Binary. Asserts arrow LargeBinary can read it [Issue](https://github.com/apache/arrow/issues/32723) |
 
 TODO: Document what each file is in the table above.
 
