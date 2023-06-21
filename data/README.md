@@ -203,3 +203,21 @@ metadata.row_group(0).column(0)
 #   total_compressed_size: 84
 #   total_uncompressed_size: 80
 ```
+
+## Large string map
+
+The file `large_string_map.brotli.parquet` was generated with:
+```python
+import pyarrow as pa
+import pyarrow.parquet as pq
+
+arr = pa.array([[("a" * 2**30, 1)]], type = pa.map_(pa.string(), pa.int32()))
+arr = pa.chunked_array([arr, arr])
+tab = pa.table({ "arr": arr })
+
+pq.write_table(tab, "test.parquet", compression='BROTLI')
+```
+
+It is meant to exercise reading of structured data where each value
+is smaller than 2GB but the combined uncompressed column chunk size
+is greater than 2GB.
