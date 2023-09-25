@@ -57,14 +57,15 @@ A detailed description of the Parquet Modular Encryption specification can be fo
  https://github.com/apache/parquet-format/blob/encryption/Encryption.md
 ```
 
-Following are the keys and key ids (when using key\_retriever) used to encrypt the encrypted columns and footer in the all the encrypted files:
+Following are the keys and key ids (when using key\_retriever) used to encrypt
+the encrypted columns and footer in all the encrypted files:
 * Encrypted/Signed Footer:
   * key:   {0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5}
   * key_id: "kf"
-* Encrypted column named double_field:
+* Encrypted column named double_field (including column and offset index):
   * key:  {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,0}
   * key_id: "kc1"
-* Encrypted column named float_field:
+* Encrypted column named float_field (including column and offset index):
   * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,1}
   * key_id: "kc2"
 
@@ -73,10 +74,11 @@ The following files are encrypted with AAD prefix "tester":
 2. encrypt\_columns\_and\_footer\_aad.parquet.encrypted
 
 
-A sample that reads and checks these files can be found at the following tests:
+A sample that reads and checks these files can be found at the following tests
+in Parquet C++:
 ```
-cpp/src/parquet/encryption-read-configurations-test.cc
-cpp/src/parquet/test-encryption-util.h
+cpp/src/parquet/encryption/read-configurations-test.cc
+cpp/src/parquet/encryption/test-encryption-util.h
 ```
 
 The `external_key_material_java.parquet.encrypted` file was encrypted using parquet-mr with
