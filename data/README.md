@@ -45,6 +45,8 @@
 | plain-dict-uncompressed-checksum.parquet         | uncompressed and dictionary-encoded INT32 and STRING columns in format v1 with a matching CRC |
 | rle-dict-uncompressed-corrupt-checksum.parquet   | uncompressed and dictionary-encoded INT32 and STRING columns in format v2 with a mismatching CRC |
 | large_string_map.brotli.parquet       | MAP(STRING, INT32) with a string column chunk of more than 2GB. See [note](#large-string-map) below |
+| float16_nonzeros_and_nans.parquet | Float16 (logical type) column with NaNs and nonzero finite min/max values |
+| float16_zeros_and_nans.parquet    | Float16 (logical type) column with NaNs and zeros as min/max values |
 
 TODO: Document what each file is in the table above.
 
@@ -94,7 +96,7 @@ The schema for the `datapage_v1-*-checksum.parquet` test files is:
 message m {
     required int32 a;
     required int32 b;
-} 
+}
 ```
 
 The detailed structure for these files is as follows:
@@ -182,7 +184,7 @@ metadata = pq.read_metadata("nan_in_stats.parquet")
 metadata.row_group(0).column(0)
 # <pyarrow._parquet.ColumnChunkMetaData object at 0x7f28539e58f0>
 #   file_offset: 88
-#   file_path: 
+#   file_path:
 #   type: DOUBLE
 #   num_values: 2
 #   path_in_schema: x
