@@ -225,3 +225,97 @@ pq.write_table(tab, "test.parquet", compression='BROTLI')
 It is meant to exercise reading of structured data where each value
 is smaller than 2GB but the combined uncompressed column chunk size
 is greater than 2GB.
+
+## Float16 Files
+
+The files `float16_zeros_and_nans.parquet` and `float16_nonzeros_and_nans.parquet`
+are meant to exercise a variety of test cases regarding `Float16` columns (which
+are represented as 2-byte `FixedLenByteArray`s), including:
+* Basic binary representations of standard values, +/- zeros, and NaN
+* Comparisons between finite values
+* Exclusion of NaNs from statistics min/max
+* Normalizing min/max values when only zeros are present (i.e. `min` is always -0 and `max` is always +0)
+
+The aforementioned files were generated with:
+
+```python
+import pyarrow as pa
+import pyarrow.parquet as pq
+import numpy as np
+
+t1 = pa.Table.from_arrays(
+    [pa.array([None,
+               np.float16(0.0),
+               np.float16(np.NaN)], type=pa.float16())],
+    names="x")
+t2 = pa.Table.from_arrays(
+    [pa.array([None,
+               np.float16(1.0),
+               np.float16(-2.0),
+               np.float16(np.NaN),
+               np.float16(0.0),
+               np.float16(-1.0),
+               np.float16(-0.0),
+               np.float16(2.0)],
+              type=pa.float16())],
+    names="x")
+
+pq.write_table(t1, "float16_zeros_and_nans.parquet")
+pq.write_table(t2, "float16_nonzeros_and_nans.parquet")
+
+m1 = pq.read_metadata("float16_zeros_and_nans.parquet")
+m2 = pq.read_metadata("float16_nonzeros_and_nans.parquet")
+
+print(m1.row_group(0).column(0))
+print(m2.row_group(0).column(0))
+# <pyarrow._parquet.ColumnChunkMetaData object at 0x7f24d48c4d60>
+#   file_offset: 72
+#   file_path:
+#   physical_type: FIXED_LEN_BYTE_ARRAY
+#   num_values: 3
+#   path_in_schema: x
+#   is_stats_set: True
+#   statistics:
+#     <pyarrow._parquet.Statistics object at 0x7f24d48c4ea0>
+#       has_min_max: True
+#       min: b'\x00\x80'
+#       max: b'\x00\x00'
+#       null_count: 1
+#       distinct_count: None
+#       num_values: 2
+#       physical_type: FIXED_LEN_BYTE_ARRAY
+#       logical_type: Float16
+#       converted_type (legacy): NONE
+#   compression: SNAPPY
+#   encodings: ('PLAIN', 'RLE', 'RLE_DICTIONARY')
+#   has_dictionary_page: True
+#   dictionary_page_offset: 4
+#   data_page_offset: 24
+#   total_compressed_size: 68
+#   total_uncompressed_size: 64
+# <pyarrow._parquet.ColumnChunkMetaData object at 0x7f24d48c4d60>
+#   file_offset: 84
+#   file_path:
+#   physical_type: FIXED_LEN_BYTE_ARRAY
+#   num_values: 8
+#   path_in_schema: x
+#   is_stats_set: True
+#   statistics:
+#     <pyarrow._parquet.Statistics object at 0x7f24d48c4e50>
+#       has_min_max: True
+#       min: b'\x00\xc0'
+#       max: b'\x00@'
+#       null_count: 1
+#       distinct_count: None
+#       num_values: 7
+#       physical_type: FIXED_LEN_BYTE_ARRAY
+#       logical_type: Float16
+#       converted_type (legacy): NONE
+#   compression: SNAPPY
+#   encodings: ('PLAIN', 'RLE', 'RLE_DICTIONARY')
+#   has_dictionary_page: True
+#   dictionary_page_offset: 4
+#   data_page_offset: 34
+#   total_compressed_size: 80
+#   total_uncompressed_size: 76
+```
