@@ -261,23 +261,23 @@ t2 = pa.Table.from_arrays(
               type=pa.float16())],
     names="x")
 
-pq.write_table(t1, "float16_zeros_and_nans.parquet")
-pq.write_table(t2, "float16_nonzeros_and_nans.parquet")
+pq.write_table(t1, "float16_zeros_and_nans.parquet", compression='none')
+pq.write_table(t2, "float16_nonzeros_and_nans.parquet", compression='none')
 
 m1 = pq.read_metadata("float16_zeros_and_nans.parquet")
 m2 = pq.read_metadata("float16_nonzeros_and_nans.parquet")
 
 print(m1.row_group(0).column(0))
 print(m2.row_group(0).column(0))
-# <pyarrow._parquet.ColumnChunkMetaData object at 0x7f24d48c4d60>
-#   file_offset: 72
+# <pyarrow._parquet.ColumnChunkMetaData object at 0x7f79e9a3d850>
+#   file_offset: 68
 #   file_path:
 #   physical_type: FIXED_LEN_BYTE_ARRAY
 #   num_values: 3
 #   path_in_schema: x
 #   is_stats_set: True
 #   statistics:
-#     <pyarrow._parquet.Statistics object at 0x7f24d48c4ea0>
+#     <pyarrow._parquet.Statistics object at 0x7f79e9a3d940>
 #       has_min_max: True
 #       min: b'\x00\x80'
 #       max: b'\x00\x00'
@@ -287,22 +287,22 @@ print(m2.row_group(0).column(0))
 #       physical_type: FIXED_LEN_BYTE_ARRAY
 #       logical_type: Float16
 #       converted_type (legacy): NONE
-#   compression: SNAPPY
+#   compression: UNCOMPRESSED
 #   encodings: ('PLAIN', 'RLE', 'RLE_DICTIONARY')
 #   has_dictionary_page: True
 #   dictionary_page_offset: 4
-#   data_page_offset: 24
-#   total_compressed_size: 68
+#   data_page_offset: 22
+#   total_compressed_size: 64
 #   total_uncompressed_size: 64
-# <pyarrow._parquet.ColumnChunkMetaData object at 0x7f24d48c4d60>
-#   file_offset: 84
+# <pyarrow._parquet.ColumnChunkMetaData object at 0x7f79ea003c40>
+#   file_offset: 80
 #   file_path:
 #   physical_type: FIXED_LEN_BYTE_ARRAY
 #   num_values: 8
 #   path_in_schema: x
 #   is_stats_set: True
 #   statistics:
-#     <pyarrow._parquet.Statistics object at 0x7f24d48c4e50>
+#     <pyarrow._parquet.Statistics object at 0x7f79e9a3d8a0>
 #       has_min_max: True
 #       min: b'\x00\xc0'
 #       max: b'\x00@'
@@ -312,11 +312,11 @@ print(m2.row_group(0).column(0))
 #       physical_type: FIXED_LEN_BYTE_ARRAY
 #       logical_type: Float16
 #       converted_type (legacy): NONE
-#   compression: SNAPPY
+#   compression: UNCOMPRESSED
 #   encodings: ('PLAIN', 'RLE', 'RLE_DICTIONARY')
 #   has_dictionary_page: True
 #   dictionary_page_offset: 4
-#   data_page_offset: 34
-#   total_compressed_size: 80
+#   data_page_offset: 32
+#   total_compressed_size: 76
 #   total_uncompressed_size: 76
 ```
