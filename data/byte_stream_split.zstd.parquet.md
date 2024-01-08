@@ -7,8 +7,8 @@ import numpy as np
 
 np.random.seed(0)
 table = pa.Table.from_pydict({
-  'f32': 1000 + np.random.normal(size=300).astype(np.float32),
-  'f64': 1000 + np.random.normal(size=300).astype(np.float64),
+  'f32': np.random.normal(size=300).astype(np.float32),
+  'f64': np.random.normal(size=300).astype(np.float64),
 })
 
 f = '/Users/martin/Downloads/byte_stream_split.parquet'
@@ -24,3 +24,4 @@ pq.write_table(
 ```
 
 This is a practical case where `BYTE_STREAM_SPLIT` encoding obtains a smaller file size than `PLAIN` or dictionary.
+Since the distributions are random normals centered at 0, each byte has nontrivial behavior.
