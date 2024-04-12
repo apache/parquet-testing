@@ -50,6 +50,7 @@
 | float16_zeros_and_nans.parquet    | Float16 (logical type) column with NaNs and zeros as min/max values. . See [note](#float16-files) below |
 | concatenated_gzip_members.parquet     | 513 UINT64 numbers compressed using 2 concatenated gzip members in a single data page |
 | byte_stream_split.zstd.parquet | Standard normals with `BYTE_STREAM_SPLIT` encoding. See [note](#byte-stream-split) below |
+| hive-map-schema.parquet | Contains a Map schema without explicitly required keys, produced by Presto. See [note](#hive-map-schema) |
 
 TODO: Document what each file is in the table above.
 
@@ -387,3 +388,34 @@ To check conformance of a `BYTE_STREAM_SPLIT` decoder, read each
 `BYTE_STREAM_SPLIT`-encoded column and compare the decoded values against
 the values from the corresponding `PLAIN`-encoded column. The values should
 be equal.
+
+## Hive Map Schema
+
+A number of producers, such as Presto/Trino/Athena, create files with schemas where the Map fields are not explicitly marked as required. An optional key is not possible according to the Parquet spec, but the schema is getting created this way. We can recreate these problematic files for testing https://github.com/apache/arrow-rs/pull/5630.
+
+Using either Presto CLI, or with AWS Athena:
+
+```sql
+CREATE TABLE my_catalog.my_table_name WITH (format = 'Parquet') AS (
+    SELECT MAP (
+        ARRAY['name', 'parent'],
+        ARRAY[
+            'report',
+            'another'
+        ]
+    ) my_map
+)
+```
+
+The schema in the created file is:
+
+```
+message hive_schema {
+  OPTIONAL group my_map (MAP) {
+    REPEATED group key_value (MAP_KEY_VALUE) {
+      OPTIONAL BYTE_ARRAY key (STRING);
+      OPTIONAL BYTE_ARRAY value (STRING);
+    }
+  }
+}
+```
