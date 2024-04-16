@@ -391,9 +391,15 @@ be equal.
 
 ## Hive Map Schema
 
-A number of producers, such as Presto/Trino/Athena, create files with schemas where the Map fields are not explicitly marked as required. An optional key is not possible according to the Parquet spec, but the schema is getting created this way. We can recreate these problematic files for testing https://github.com/apache/arrow-rs/pull/5630.
+A number of producers, such as Presto/Trino/Athena, create files with schemas where the Map fields are not explicitly marked as required. An optional key is not possible according to the Parquet spec, but the schema is getting created this way. 
 
-Using either Presto CLI, or with AWS Athena:
+This issue has been fixed in:
+- [Trino v386+](https://github.com/trinodb/trino/commit/3247bd2e64d7422bd13e805cd67cfca3fa8ba520) 
+- [Presto v0.274+](https://github.com/prestodb/presto/commit/842b46972c11534a7729d0a18e3abc5347922d1a)  
+
+Of course it will take some time for all new files to be produced with these fixes, and the amount of existing data out there remains.
+
+We can recreate these problematic files for testing [arrow-rs #5630](https://github.com/apache/arrow-rs/pull/5630) with relevant Presto/Trino CLI, or with AWS Athena Console:
 
 ```sql
 CREATE TABLE my_catalog.my_table_name WITH (format = 'Parquet') AS (
