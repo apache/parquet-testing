@@ -50,7 +50,7 @@
 | float16_zeros_and_nans.parquet    | Float16 (logical type) column with NaNs and zeros as min/max values. . See [note](#float16-files) below |
 | concatenated_gzip_members.parquet     | 513 UINT64 numbers compressed using 2 concatenated gzip members in a single data page |
 | byte_stream_split.zstd.parquet | Standard normals with `BYTE_STREAM_SPLIT` encoding. See [note](#byte-stream-split) below |
-| hive-map-schema.parquet | Contains a Map schema without explicitly required keys, produced by Presto. See [note](#hive-map-schema) |
+| incorrect_map_schema.parquet | Contains a Map schema without explicitly required keys, produced by Presto. See [note](#incorrect-map-schema) |
 
 TODO: Document what each file is in the table above.
 
@@ -389,17 +389,18 @@ To check conformance of a `BYTE_STREAM_SPLIT` decoder, read each
 the values from the corresponding `PLAIN`-encoded column. The values should
 be equal.
 
-## Hive Map Schema
+## Incorrect Map Schema
 
-A number of producers, such as Presto/Trino/Athena, create files with schemas where the Map fields are not explicitly marked as required. An optional key is not possible according to the Parquet spec, but the schema is getting created this way. 
+A number of producers, such as Presto/Trino/Athena, have been creating files with schemas
+where the Map key fields are marked as optional rather than required.
+This is not spec-compliant, yet appears in a number of existing data files in the wild.
 
 This issue has been fixed in:
 - [Trino v386+](https://github.com/trinodb/trino/commit/3247bd2e64d7422bd13e805cd67cfca3fa8ba520) 
 - [Presto v0.274+](https://github.com/prestodb/presto/commit/842b46972c11534a7729d0a18e3abc5347922d1a)  
 
-Of course it will take some time for all new files to be produced with these fixes, and the amount of existing data out there remains.
-
-We can recreate these problematic files for testing [arrow-rs #5630](https://github.com/apache/arrow-rs/pull/5630) with relevant Presto/Trino CLI, or with AWS Athena Console:
+We can recreate these problematic files for testing [arrow-rs #5630](https://github.com/apache/arrow-rs/pull/5630)
+with relevant Presto/Trino CLI, or with AWS Athena Console:
 
 ```sql
 CREATE TABLE my_catalog.my_table_name WITH (format = 'Parquet') AS (
