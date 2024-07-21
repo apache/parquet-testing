@@ -51,6 +51,7 @@
 | concatenated_gzip_members.parquet     | 513 UINT64 numbers compressed using 2 concatenated gzip members in a single data page |
 | byte_stream_split.zstd.parquet | Standard normals with `BYTE_STREAM_SPLIT` encoding. See [note](#byte-stream-split) below |
 | incorrect_map_schema.parquet | Contains a Map schema without explicitly required keys, produced by Presto. See [note](#incorrect-map-schema) |
+| column_chunk_key_value_metadata.parquet | two INT32 columns, one with column chunk key-value metadata {"foo": "bar", "thisiskeywithoutvalue": null} note that the second key "thisiskeywithoutvalue", does not have a value, but the value can be mapped to an empty string "" when read depending on the client |
 
 TODO: Document what each file is in the table above.
 
