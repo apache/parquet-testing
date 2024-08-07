@@ -52,6 +52,7 @@
 | byte_stream_split.zstd.parquet | Standard normals with `BYTE_STREAM_SPLIT` encoding. See [note](#byte-stream-split) below |
 | incorrect_map_schema.parquet | Contains a Map schema without explicitly required keys, produced by Presto. See [note](#incorrect-map-schema) |
 | column_chunk_key_value_metadata.parquet | two INT32 columns, one with column chunk key-value metadata {"foo": "bar", "thisiskeywithoutvalue": null} note that the second key "thisiskeywithoutvalue", does not have a value, but the value can be mapped to an empty string "" when read depending on the client |
+| sorting_columns.parquet | INT64 and BYTE_ARRAY columns with first column with nulls_first and descending, second column with not nulls first and ascending |
 
 TODO: Document what each file is in the table above.
 
