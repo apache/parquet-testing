@@ -26,3 +26,7 @@ These are files used for reproducing various bugs that have been reported.
   stored in dictionary page header is negative.
 * bad-levels.parquet: tests a case where a page has insufficient repetition
   levels.
+* ARROW-GH-41321.parquet: test case of https://github.com/apache/arrow/issues/41321
+  where decoded rep / def levels is less than num_values in page_header.
+* ARROW-GH-41317.parquet: test case of https://github.com/apache/arrow/issues/41317
+  where all columns have not the same size.
