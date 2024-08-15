@@ -22,3 +22,7 @@ These are files used for reproducing various bugs that have been reported.
 
 * PARQUET-1481.parquet: tests a case where a schema Thrift value has been
   corrupted
+* ARROW-GH-41321.parquet: test case of https://github.com/apache/arrow/issues/41321
+  where decoded rep / def levels is less than num_values in page_header.
+* ARROW-GH-41317.parquet: test case of https://github.com/apache/arrow/issues/41317
+  where all columns have not the same size.
