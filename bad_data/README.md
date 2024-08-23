@@ -30,4 +30,4 @@ These are files used for reproducing various bugs that have been reported.
   where decoded rep / def levels is less than num_values in page_header.
 * ARROW-GH-41317.parquet: test case of https://github.com/apache/arrow/issues/41317
   where all columns have not the same size.
-* ARROW-GH-43605.parquet: In Go, file reader goroutine crashed.
+* ARROW-GH-43605.parquet: dictionary index page uses rle encoding but 0 as rle bit-width.
