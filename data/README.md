@@ -432,7 +432,7 @@ message hive_schema {
 }
 ```
 
-## Primitive REPEATED fields with no LIST schema
+## REPEATED primitive fields with no LIST annotation
 ```
 Metadata for file: repeated_primitive_no_list.parquet
 
