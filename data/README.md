@@ -54,7 +54,7 @@
 | column_chunk_key_value_metadata.parquet | two INT32 columns, one with column chunk key-value metadata {"foo": "bar", "thisiskeywithoutvalue": null} note that the second key "thisiskeywithoutvalue", does not have a value, but the value can be mapped to an empty string "" when read depending on the client |
 | sorting_columns.parquet | INT64 and BYTE_ARRAY columns with first column with nulls first and descending, second column with nulls last and ascending. This file contains two row groups with same data and sorting columns. |
 | old_list_structure.parquet | Single LIST<LIST<INT32>> column with legacy two-level list structure. See [old_list_structure.md](old_list_structure.md) |
-| repeated_primitive_no_list.parquet | INT32 and BYTE_ARRAY REPEATED primitive fields not contained in a LIST annotated group. |
+| repeated_primitive_no_list.parquet | INT32 and BYTE_ARRAY REPEATED primitive fields not contained in a LIST annotated group. See [note](#Primitive-REPEATED-fields-with-no-LIST-schema) |
 
 TODO: Document what each file is in the table above.
 
@@ -428,6 +428,23 @@ message hive_schema {
       OPTIONAL BYTE_ARRAY key (STRING);
       OPTIONAL BYTE_ARRAY value (STRING);
     }
+  }
+}
+```
+
+## Primitive REPEATED fields with no LIST schema
+```
+Metadata for file: repeated_primitive_no_list.parquet
+
+version: 1
+num of rows: 4
+created by: parquet-rs version 53.2.0
+message schema {
+  REPEATED INT32 Int32_list;
+  REPEATED BYTE_ARRAY String_list (UTF8);
+  REQUIRED group group_of_lists {
+    REPEATED INT32 Int32_list_in_group;
+    REPEATED BYTE_ARRAY String_list_in_group (UTF8);
   }
 }
 ```
