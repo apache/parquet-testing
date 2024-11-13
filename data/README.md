@@ -52,7 +52,7 @@
 | byte_stream_split.zstd.parquet | Standard normals with `BYTE_STREAM_SPLIT` encoding. See [note](#byte-stream-split) below |
 | incorrect_map_schema.parquet | Contains a Map schema without explicitly required keys, produced by Presto. See [note](#incorrect-map-schema) |
 | column_chunk_key_value_metadata.parquet | two INT32 columns, one with column chunk key-value metadata {"foo": "bar", "thisiskeywithoutvalue": null} note that the second key "thisiskeywithoutvalue", does not have a value, but the value can be mapped to an empty string "" when read depending on the client |
-| sorting_columns.parquet | INT64 and BYTE_ARRAY columns with first column with nulls first and descending, second column with nulls last and ascending. This file contains two row groups with same data and sorting columns. |
+| sort_columns.parquet | INT64 and BYTE_ARRAY columns with first column with nulls first and descending, second column with nulls last and ascending. This file contains two row groups with same data and sorting columns. |
 | old_list_structure.parquet | Single LIST<LIST<INT32>> column with legacy two-level list structure. See [old_list_structure.md](old_list_structure.md) |
 | repeated_primitive_no_list.parquet | REPEATED INT32 and BYTE_ARRAY fields without LIST annotation. See [note](#REPEATED-primitive-fields-with-no-LIST-annotation) |
 
