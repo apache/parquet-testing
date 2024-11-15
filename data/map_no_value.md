@@ -19,7 +19,7 @@
 
 `map_no_value.parquet` is generated with parquet-rs version 53.2.0.
 It contains a MAP without a `values` field, and an equivalent LIST
-repeating the MAP keys. Both fields are 3 rows:
+repeating the MAP keys. Both columns comprise 3 rows:
 ```
 [1, 2, 3]
 [4, 5, 6]
