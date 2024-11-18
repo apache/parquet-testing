@@ -17,9 +17,106 @@
   ~ under the License.
   -->
 
-`map_no_value.parquet` is generated with parquet-rs version 53.2.0.
-It contains a MAP without a `values` field, and an equivalent LIST
-repeating the MAP keys. Both columns comprise 3 rows:
+`map_no_value.parquet` is generated with parquet-rs version 53.2.0
+using the following code:
+```
+    fn main() {
+        use crate::schema::parser::parse_message_type;
+        use crate::file::writer::SerializedFileWriter;
+        use crate::data_type::Int32Type;
+        use std::sync::Arc;
+
+        let schema = "
+            message spark_schema {
+                REQUIRED group my_map (MAP) {
+                    REPEATED group key_value {
+                        REQUIRED INT32 key;
+                        OPTIONAL INT32 value;
+                    }
+                }
+                REQUIRED group my_map_no_v (MAP) {
+                    REPEATED group key_value {
+                        REQUIRED INT32 key;
+                    }
+                }
+                REQUIRED group my_list (LIST) {
+                    REPEATED group list {
+                        REQUIRED INT32 element;
+                    }
+                }
+            }
+            ";
+        let schema = Arc::new(parse_message_type(schema).unwrap());
+
+        // Write Parquet file to buffer
+        let mut buffer = std::fs::File::create("/tmp/map_no_value.parquet").unwrap();
+        let mut file_writer =
+            SerializedFileWriter::new(&mut buffer, schema, Default::default()).unwrap();
+        let mut row_group_writer = file_writer.next_row_group().unwrap();
+
+        // Write column my_map.key_value.key
+        let mut column_writer = row_group_writer.next_column().unwrap().unwrap();
+        column_writer
+            .typed::<Int32Type>()
+            .write_batch(
+                &[1, 2, 3, 4, 5, 6, 7, 8, 9],
+                Some(&[1, 1, 1, 1, 1, 1, 1, 1, 1]),
+                Some(&[0, 1, 1, 0, 1, 1, 0, 1, 1]),
+            )
+            .unwrap();
+        column_writer.close().unwrap();
+
+        // Write column my_map.key_value.value
+        let mut column_writer = row_group_writer.next_column().unwrap().unwrap();
+        column_writer
+            .typed::<Int32Type>()
+            .write_batch(
+                &[],
+                Some(&[1, 1, 1, 1, 1, 1, 1, 1, 1]),
+                Some(&[0, 1, 1, 0, 1, 1, 0, 1, 1]),
+            )
+            .unwrap();
+        column_writer.close().unwrap();
+
+        // Write column my_map_no_v.key_value.key
+        let mut column_writer = row_group_writer.next_column().unwrap().unwrap();
+        column_writer
+            .typed::<Int32Type>()
+            .write_batch(
+                &[1, 2, 3, 4, 5, 6, 7, 8, 9],
+                Some(&[1, 1, 1, 1, 1, 1, 1, 1, 1]),
+                Some(&[0, 1, 1, 0, 1, 1, 0, 1, 1]),
+            )
+            .unwrap();
+        column_writer.close().unwrap();
+
+        // Write column my_list.list.element
+        let mut column_writer = row_group_writer.next_column().unwrap().unwrap();
+        column_writer
+            .typed::<Int32Type>()
+            .write_batch(
+                &[1, 2, 3, 4, 5, 6, 7, 8, 9],
+                Some(&[1, 1, 1, 1, 1, 1, 1, 1, 1]),
+                Some(&[0, 1, 1, 0, 1, 1, 0, 1, 1]),
+            )
+            .unwrap();
+        column_writer.close().unwrap();
+
+        // Finalize Parquet file
+        row_group_writer.close().unwrap();
+        file_writer.close().unwrap();
+    }
+```
+
+It contains a MAP with all null values, a second MAP without a `values` field, and
+an equivalent LIST repeating the MAP keys. The first column is 3 MAP rows:
+```
+{1 -> null, 2 -> null, 3 -> null}
+{4 -> null, 5 -> null, 6 -> null}
+{7 -> null, 8 -> null, 9 -> null}
+```
+
+The last two columns comprise 3 equivalent rows of `list<Integer>`:
 ```
 [1, 2, 3]
 [4, 5, 6]
@@ -36,6 +133,12 @@ message spark_schema {
   required group my_map (MAP) {
     repeated group key_value {
       required int32 key;
+      optional int32 value;
+    }
+  }
+  required group my_map_no_v (MAP) {
+    repeated group key_value {
+      required int32 key;
     }
   }
   required group my_list (LIST) {
@@ -46,9 +149,11 @@ message spark_schema {
 }
 
 
-Row group 0:  count: 3  72.00 B records  start: 4  total(compressed): 216 B total(uncompressed):216 B 
+Row group 0:  count: 3  123.00 B records  start: 4  total(compressed): 369 B total(uncompressed):369 B 
 --------------------------------------------------------------------------------
-                      type      encodings count     avg size   nulls   min / max
-my_map.key_value.key  INT32     _ RR_     9         12.00 B    0       "1" / "9"
-my_list.list.element  INT32     _ RR_     9         12.00 B    0       "1" / "9"
+                           type      encodings count     avg size   nulls   min / max
+my_map.key_value.key       INT32     _ RR_     9         12.00 B    0       "1" / "9"
+my_map.key_value.value     INT32     _ RR_     9         5.00 B     9       
+my_map_no_v.key_value.key  INT32     _ RR_     9         12.00 B    0       "1" / "9"
+my_list.list.element       INT32     _ RR_     9         12.00 B    0       "1" / "9"
 ```

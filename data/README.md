@@ -55,7 +55,7 @@
 | sort_columns.parquet | INT64 and BYTE_ARRAY columns with first column with nulls first and descending, second column with nulls last and ascending. This file contains two row groups with same data and sorting columns. |
 | old_list_structure.parquet | Single LIST<LIST<INT32>> column with legacy two-level list structure. See [old_list_structure.md](old_list_structure.md) |
 | repeated_primitive_no_list.parquet | REPEATED INT32 and BYTE_ARRAY fields without LIST annotation. See [note](#REPEATED-primitive-fields-with-no-LIST-annotation) |
-| map_no_value.parquet | MAP with INT32 keys and no values and LIST<INT32> column with same values as the MAP. See [map_no_value.md](map_no_value.md) |
+| map_no_value.parquet | MAP with null values, MAP with INT32 keys and no values, and LIST<INT32> column with same values as the MAP keys. See [map_no_value.md](map_no_value.md) |
 
 TODO: Document what each file is in the table above.
 
