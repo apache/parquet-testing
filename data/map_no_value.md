@@ -21,13 +21,14 @@
 using the following code:
 ```
     fn main() {
-        use crate::schema::parser::parse_message_type;
-        use crate::file::writer::SerializedFileWriter;
         use crate::data_type::Int32Type;
+        use crate::file::properties::{EnabledStatistics, WriterProperties};
+        use crate::file::writer::SerializedFileWriter;
+        use crate::schema::parser::parse_message_type;
         use std::sync::Arc;
 
         let schema = "
-            message spark_schema {
+            message schema {
                 REQUIRED group my_map (MAP) {
                     REPEATED group key_value {
                         REQUIRED INT32 key;
@@ -49,9 +50,13 @@ using the following code:
         let schema = Arc::new(parse_message_type(schema).unwrap());
 
         // Write Parquet file to buffer
-        let mut buffer = std::fs::File::create("/tmp/map_no_value.parquet").unwrap();
-        let mut file_writer =
-            SerializedFileWriter::new(&mut buffer, schema, Default::default()).unwrap();
+        let mut file = std::fs::File::create("/tmp/map_no_value.parquet").unwrap();
+        let props = Arc::new(
+            WriterProperties::builder()
+                .set_statistics_enabled(EnabledStatistics::None)
+                .build(),
+        );
+        let mut file_writer = SerializedFileWriter::new(&mut file, schema, props).unwrap();
         let mut row_group_writer = file_writer.next_row_group().unwrap();
 
         // Write column my_map.key_value.key
@@ -129,7 +134,7 @@ File path:  map_no_value.parquet
 Created by: parquet-rs version 53.2.0
 Properties: (none)
 Schema:
-message spark_schema {
+message schema {
   required group my_map (MAP) {
     repeated group key_value {
       required int32 key;
@@ -149,11 +154,10 @@ message spark_schema {
 }
 
 
-Row group 0:  count: 3  123.00 B records  start: 4  total(compressed): 369 B total(uncompressed):369 B 
+Row group 0:  count: 3  105.00 B records  start: 4  total(compressed): 315 B total(uncompressed):315 B
 --------------------------------------------------------------------------------
                            type      encodings count     avg size   nulls   min / max
-my_map.key_value.key       INT32     _ RR_     9         12.00 B    0       "1" / "9"
-my_map.key_value.value     INT32     _ RR_     9         5.00 B     9       
-my_map_no_v.key_value.key  INT32     _ RR_     9         12.00 B    0       "1" / "9"
-my_list.list.element       INT32     _ RR_     9         12.00 B    0       "1" / "9"
-```
+my_map.key_value.key       INT32     _ RR_     9         10.00 B            
+my_map.key_value.value     INT32     _ RR_     9         5.00 B             
+my_map_no_v.key_value.key  INT32     _ RR_     9         10.00 B            
+my_list.list.element       INT32     _ RR_     9         10.00 B
