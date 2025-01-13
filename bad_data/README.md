@@ -31,3 +31,5 @@ These are files used for reproducing various bugs that have been reported.
 * ARROW-GH-41317.parquet: test case of https://github.com/apache/arrow/issues/41317
   where all columns have not the same size.
 * ARROW-GH-43605.parquet: dictionary index page uses rle encoding but 0 as rle bit-width.
+* ARROW-GH-45185.parquet: test case of https://github.com/apache/arrow/issues/45185
+  where repetition levels start with a 1 instead of 0.
