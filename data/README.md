@@ -56,7 +56,7 @@
 | old_list_structure.parquet | Single LIST<LIST<INT32>> column with legacy two-level list structure. See [old_list_structure.md](old_list_structure.md) |
 | repeated_primitive_no_list.parquet | REPEATED INT32 and BYTE_ARRAY fields without LIST annotation. See [note](#REPEATED-primitive-fields-with-no-LIST-annotation) |
 | map_no_value.parquet | MAP with null values, MAP with INT32 keys and no values, and LIST<INT32> column with same values as the MAP keys. See [map_no_value.md](map_no_value.md) |
-| page_v2_empty_compressed.parquet               | An INT32 columns with DataPageV2, all values is null, and the data is marked as a zero-sized zstd compressed buffer |
+| page_v2_empty_compressed.parquet | An INT32 column with DataPageV2, all values are null, the zero-sized data is compressed using ZSTD |
 
 TODO: Document what each file is in the table above.
 
