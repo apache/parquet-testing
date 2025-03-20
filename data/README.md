@@ -57,6 +57,7 @@
 | repeated_primitive_no_list.parquet | REPEATED INT32 and BYTE_ARRAY fields without LIST annotation. See [note](#REPEATED-primitive-fields-with-no-LIST-annotation) |
 | map_no_value.parquet | MAP with null values, MAP with INT32 keys and no values, and LIST<INT32> column with same values as the MAP keys. See [map_no_value.md](map_no_value.md) |
 | page_v2_empty_compressed.parquet | An INT32 column with DataPageV2, all values are null, the zero-sized data is compressed using ZSTD |
+| unknown-logical-type.parquet | A file containing a column annotated with a LogicalType whose identifier has been set to an abitrary high value to check the behaviour of an old reader reading a file written by a new writer containing an unsupported type (see [related issue](https://github.com/apache/arrow/issues/41764)). |
 
 TODO: Document what each file is in the table above.
 
@@ -403,8 +404,8 @@ where the Map key fields are marked as optional rather than required.
 This is not spec-compliant, yet appears in a number of existing data files in the wild.
 
 This issue has been fixed in:
-- [Trino v386+](https://github.com/trinodb/trino/commit/3247bd2e64d7422bd13e805cd67cfca3fa8ba520) 
-- [Presto v0.274+](https://github.com/prestodb/presto/commit/842b46972c11534a7729d0a18e3abc5347922d1a)  
+- [Trino v386+](https://github.com/trinodb/trino/commit/3247bd2e64d7422bd13e805cd67cfca3fa8ba520)
+- [Presto v0.274+](https://github.com/prestodb/presto/commit/842b46972c11534a7729d0a18e3abc5347922d1a)
 
 We can recreate these problematic files for testing [arrow-rs #5630](https://github.com/apache/arrow-rs/pull/5630)
 with relevant Presto/Trino CLI, or with AWS Athena Console:
