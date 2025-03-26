@@ -24,7 +24,7 @@ These are files used for reproducing various bugs that have been reported.
   corrupted.
 * ARROW-RS-GH-6229-DICTHEADER.parquet: tests a case where the number of values
   stored in dictionary page header is negative.
-* ARROW-RS-GH-6229-LEVELS.parquet: tests a case where a page has insufficient 
+* ARROW-RS-GH-6229-LEVELS.parquet: tests a case where a page has insufficient
   repetition levels.
 * ARROW-GH-41321.parquet: test case of https://github.com/apache/arrow/issues/41321
   where decoded rep / def levels is less than num_values in page_header.
