@@ -40,6 +40,11 @@ val df = values.toDF("str").select(col("str").cast(DataTypes.TimestampType).as("
 df.write.parquet("int96_from_spark.parquet")
 ```
 
+As microseconds since the epoch, they correspond to:
+```
+1704141296123456, 1704070800000000, 253402225200000000, 1735599600000000, null, 9089380393200000000
+```
+
 # File Metadata (from parquet-cli meta command)
 ```
 File path:  int96_from_spark.parquet
