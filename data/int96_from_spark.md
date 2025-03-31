@@ -37,7 +37,7 @@ and can be reproduced in a Spark shell with the code below:
 val values = Seq(Some("2024-01-01T12:34:56.123456"), Some("2024-01-01T01:00:00Z"), Some("9999-12-31T01:00:00-02:00"), Some("2024-12-31T01:00:00+02:00"), None, Some("290000-12-31T01:00:00+02:00"))
 import org.apache.spark.sql.types.DataTypes
 val df = values.toDF("str").select(col("str").cast(DataTypes.TimestampType).as("a")).coalesce(1)
-df.write.parquet("int96_spark.parquet")
+df.write.parquet("int96_from_spark.parquet")
 ```
 
 # File Metadata (from parquet-cli meta command)
