@@ -15,12 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import json
-
 from pathlib import Path
+import re
 
+import geoarrow.pyarrow as ga
 import numpy as np
-
 import pyarrow as pa
 from pyarrow import parquet
 import shapely
@@ -33,33 +32,34 @@ if tuple(shapely.__version__.split(".")) < ("2", "1", "0"):
 
 HERE = Path(__file__).parent
 
+# Shapely doesn't propagate the geometry type for MULTI* Z/M/ZM, so
+# we have to write our own geometry type detector to check statistics output
+GEOMETRY_TYPE_CODE = {
+    "POINT": 1,
+    "LINESTRING": 2,
+    "POLYGON": 3,
+    "MULTIPOINT": 4,
+    "MULTILINESTRING": 5,
+    "MULTIPOLYGON": 6,
+    "GEOMETRYCOLLECTION": 7,
+}
 
-class WkbType(pa.ExtensionType):
-    """Minimal geoarrow.wkb implementation"""
-
-    def __init__(self, crs=None, edges=None, *, storage_type=pa.binary()):
-        self.crs = crs
-        self.edges = edges
-        super().__init__(storage_type, "geoarrow.wkb")
-
-    def __arrow_ext_serialize__(self):
-        obj = {"crs": self.crs, "edges": self.edges}
-        return json.dumps({k: v for k, v in obj.items() if v}).encode()
-
-    @classmethod
-    def __arrow_ext_deserialize__(cls, storage_type, serialized):
-        obj: dict = json.loads(serialized)
-        return WkbType(**obj, storage_type=storage_type)
+DIMENSIONS_CODE = {None: 0, "Z": 1000, "M": 2000, "ZM": 3000}
 
 
-pa.register_extension_type(WkbType())
+def geometry_type_code(wkt):
+    if wkt is None:
+        return None
+
+    geometry_type, _, dimensions = re.match(r"([A-Z]+)( ([ZM]+)?)?", wkt).groups()
+    return GEOMETRY_TYPE_CODE[geometry_type] + DIMENSIONS_CODE[dimensions]
 
 
 def write_geospatial():
     with open(HERE / "geospatial.yaml") as f:
         examples = yaml.safe_load(f)
 
-    schema = pa.schema({"group": pa.utf8(), "wkt": pa.utf8(), "geometry": WkbType()})
+    schema = pa.schema({"group": pa.utf8(), "wkt": pa.utf8(), "geometry": ga.wkb()})
 
     with parquet.ParquetWriter(
         HERE / "geospatial.parquet",
@@ -68,16 +68,19 @@ def write_geospatial():
         compression="none",
     ) as writer:
         for group_name, geometries_wkt in examples.items():
-            # Unfortunately these are not quite right because of
-            # https://github.com/libgeos/geos/issues/888
-            geometries = shapely.from_wkt(geometries_wkt)
-            wkbs = shapely.to_wkb(geometries, flavor="iso")
+            # Unfortunately we can't use Shapely to generate the test WKB
+            # because of https://github.com/libgeos/geos/issues/888, so we use
+            # geoarrow.pyarrow.as_wkb() instead.
+            # geometries = shapely.from_wkt(geometries_wkt)
+            # wkbs = shapely.to_wkb(geometries, flavor="iso")
+            # wkb_array = ga.wkb().wrap_array(pa.array(wkbs, pa.binary()))
+            wkt_array = pa.array(geometries_wkt, pa.utf8())
 
             batch = pa.record_batch(
                 {
                     "group": [group_name] * len(geometries_wkt),
-                    "wkt": pa.array(geometries_wkt, pa.utf8()),
-                    "geometry": WkbType().wrap_array(pa.array(wkbs, pa.binary())),
+                    "wkt": wkt_array,
+                    "geometry": ga.as_wkb(wkt_array),
                 }
             )
             writer.write_batch(batch)
@@ -109,13 +112,7 @@ def calc_stats_shapely(wkts):
     geometries = shapely.from_wkt(wkts)
 
     # Calculate the list of iso type codes
-    type_codes = set()
-    for type_id, has_z, has_m in zip(
-        shapely.get_type_id(geometries),
-        shapely.has_z(geometries),
-        shapely.has_m(geometries),
-    ):
-        type_codes.add(iso_type_code(type_id, has_z, has_m))
+    type_codes = set(geometry_type_code(wkt) for wkt in wkts)
 
     # Calculate min/max ignoring nan values
     coords = shapely.get_coordinates(geometries, include_z=True, include_m=True)
@@ -160,7 +157,9 @@ def check_geospatial_statistics():
         column_metadata = file.metadata.row_group(i).column(2)
         group = batch["group"][0].as_py()
 
-        check_batch_statistics(column_metadata.geo_statistics, batch["wkt"], group)
+        check_batch_statistics(
+            column_metadata.geo_statistics, batch["wkt"].to_pylist(), group
+        )
 
 
 if __name__ == "__main__":
