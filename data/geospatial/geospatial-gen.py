@@ -84,11 +84,42 @@ def write_geospatial():
                     "geometry": ga.as_wkb(wkt_array),
                 }
             )
+
             writer.write_batch(batch)
 
 
-def check_geospatial_schema():
-    file = parquet.ParquetFile(HERE / "geospatial.parquet")
+def write_geospatial_with_nan():
+    geometries_wkt = [
+        "POINT ZM (10 20 30 40)",
+        "POINT ZM (50 60 70 80)",
+        "LINESTRING ZM (90 100 110 120, nan nan nan nan, 130 140 150 160)",
+    ]
+
+    schema = pa.schema({"group": pa.utf8(), "wkt": pa.utf8(), "geometry": ga.wkb()})
+
+    with parquet.ParquetWriter(
+        HERE / "geospatial-with-nan.parquet",
+        schema,
+        store_schema=False,
+        compression="none",
+    ) as writer:
+        geometries = shapely.from_wkt(geometries_wkt)
+        wkbs = shapely.to_wkb(geometries, flavor="iso")
+        wkb_array = ga.wkb().wrap_array(pa.array(wkbs, pa.binary()))
+
+        batch = pa.record_batch(
+            {
+                "group": ["with-nan"] * len(geometries_wkt),
+                "wkt": geometries_wkt,
+                "geometry": wkb_array,
+            }
+        )
+
+        writer.write_batch(batch)
+
+
+def check_geospatial_schema(name):
+    file = parquet.ParquetFile(HERE / name)
 
     col = file.schema.column(2)
     col_dict = json.loads(col.logical_type.to_json())
@@ -97,10 +128,8 @@ def check_geospatial_schema():
         raise ValueError(f"Expected 'Geometry' logical type but got '{col_type}'")
 
 
-def check_geospatial_values():
-    tab = parquet.read_table(
-        HERE / "geospatial.parquet", arrow_extensions_enabled=False
-    )
+def check_geospatial_values(name):
+    tab = parquet.read_table(HERE / name, arrow_extensions_enabled=False)
     geometries_from_wkt = shapely.from_wkt(tab["wkt"])
     geometries_from_wkb = shapely.from_wkb(tab["geometry"])
     shapely.testing.assert_geometries_equal(geometries_from_wkt, geometries_from_wkb)
@@ -159,10 +188,8 @@ def check_batch_statistics(stats, wkts, group):
         )
 
 
-def check_geospatial_statistics():
-    file = parquet.ParquetFile(
-        HERE / "geospatial.parquet", arrow_extensions_enabled=False
-    )
+def check_geospatial_statistics(name):
+    file = parquet.ParquetFile(HERE / name)
     for i in range(file.num_row_groups):
         batch = file.read_row_group(i)
         column_metadata = file.metadata.row_group(i).column(2)
@@ -175,6 +202,11 @@ def check_geospatial_statistics():
 
 if __name__ == "__main__":
     write_geospatial()
-    check_geospatial_schema()
-    check_geospatial_values()
-    check_geospatial_statistics()
+    write_geospatial_with_nan()
+
+    check_geospatial_schema("geospatial.parquet")
+    check_geospatial_values("geospatial.parquet")
+    check_geospatial_statistics("geospatial.parquet")
+
+    check_geospatial_schema("geospatial-with-nan.parquet")
+    check_geospatial_statistics("geospatial-with-nan.parquet")

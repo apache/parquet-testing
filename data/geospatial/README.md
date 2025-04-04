@@ -30,3 +30,38 @@ GEOMETRY and GEOGRAPHY.
   `wkt` (the human-readable well-known text representation of the geometry)
   and `geometry` (a Parquet GEOMETRY column). A human-readable version of
   the file is available in `geospatial.yaml`.
+
+- `geospatial-with-nan.parquet`: Contains a single row group with a GEOMETRY
+  column whose contents contains two valid geometries and one invalid LINESTRING
+  whose coordinates contain a `NaN` value in all dimensions. Such a geometry is
+  not valid and the behaviour of it is not defined; however, implementations should
+  not generate statistics that would prevent the other (valid) geometries in the
+  column chunk from appearing in the case of predicate pushdown. Notably,
+  implementations should *not* generate statistics that contain `NaN` for this case.
+
+  Note that POINT EMPTY is represented by convention in well-known binary as
+  a POINT whose coordinates are all `NaN`, which should be treated as a valid
+  (but empty) geometry.
+
+- `crs-default.parquet`: Contains a GEOMETRY column with the crs
+  omitted. This should be interpreted as OGC:CRS84 (i.e., longitude/latitude).
+
+- `crs-geography.parquet`: Contains a GEOGRAPHY column with the crs
+  omitted. This should be interpreted as OGC:CRS84 (i.e., longitude/latitude).
+
+- `crs-projjson.parquet`: Contains a GEOMETRY column with the crs parameter
+  set to `projjson:projjson_epsg_5070` and a metadata field with the key
+  `projjson_epsg_5070` and a value consisting of the appropriate PROJJSON
+  value for EPSG:5070.
+
+- `crs-srid.parquet`: Contains a GEOMETRY column with the crs parameter set
+  to `srid:5070`. The Parquet format does not mention the EPSG database in
+  any way, but otherwise out-of-context SRID values are commonly interpreted
+  as the corresponding EPSG:xxxx value. Producers of SRIDs may wish to
+  avoid valid EPSG:xxxx values where this is not the intended usage to minimize
+  the chances they will be misinterpreted by consumers who make this assumption.
+
+- `crs-arbitrary-value.parquet`: Contains a GEOMETRY column with the crs
+  parameter set to an arbitrary string value. The Parquet format does not
+  restrict the value of the crs parameter and implementations may choose to
+  attempt interpreting the value or error.

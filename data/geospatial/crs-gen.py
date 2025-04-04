@@ -117,7 +117,7 @@ def write_crs_files():
     # Write a file with the srid format in the specification
     write_crs(WkbType(crs="srid:5070"), geometry_not_lonlat, "crs-srid.parquet")
 
-    # Write a file with an arbitrary value (theoretically allowed by the spec
+    # Write a file with an arbitrary value (theoretically allowed by the format
     # and consumers may choose to error or attempt to interpret the value)
     write_crs(
         WkbType(crs=crs_not_lonlat.to_json_dict()),
