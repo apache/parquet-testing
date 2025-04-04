@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import json
 from pathlib import Path
 import re
 
@@ -84,6 +85,16 @@ def write_geospatial():
                 }
             )
             writer.write_batch(batch)
+
+
+def check_geospatial_schema():
+    file = parquet.ParquetFile(HERE / "geospatial.parquet")
+
+    col = file.schema.column(2)
+    col_dict = json.loads(col.logical_type.to_json())
+    col_type = col_dict["Type"]
+    if col_type != "Geometry":
+        raise ValueError(f"Expected 'Geometry' logical type but got '{col_type}'")
 
 
 def check_geospatial_values():
@@ -164,5 +175,6 @@ def check_geospatial_statistics():
 
 if __name__ == "__main__":
     write_geospatial()
+    check_geospatial_schema()
     check_geospatial_values()
     check_geospatial_statistics()

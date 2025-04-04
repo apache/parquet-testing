@@ -19,3 +19,14 @@
 
 # Geospatial Test Files
 
+
+These test files cover the main and corner case functionality of the
+[Parquet Geospatial Types](https://github.com/apache/parquet-format/blob/master/Geospatial.md)
+GEOMETRY and GEOGRAPHY.
+
+- `geospatial.parquet`: Contains row groups with specific combinations of
+  geometry types to test statistics generation and geometry type coverage.
+  The file contains columns `group` (string identifier of the group name),
+  `wkt` (the human-readable well-known text representation of the geometry)
+  and `geometry` (a Parquet GEOMETRY column). A human-readable version of
+  the file is available in `geospatial.yaml`.
