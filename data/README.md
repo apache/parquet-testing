@@ -57,6 +57,7 @@
 | repeated_primitive_no_list.parquet | REPEATED INT32 and BYTE_ARRAY fields without LIST annotation. See [note](#REPEATED-primitive-fields-with-no-LIST-annotation) |
 | map_no_value.parquet | MAP with null values, MAP with INT32 keys and no values, and LIST<INT32> column with same values as the MAP keys. See [map_no_value.md](map_no_value.md) |
 | page_v2_empty_compressed.parquet | An INT32 column with DataPageV2, all values are null, the zero-sized data is compressed using ZSTD |
+| datapage_v2_empty_datapage.snappy.parquet | A compressed FLOAT column with DataPageV2, a single row, value is null, there is no data for decompression (see [related issue](https://github.com/apache/arrow-rs/issues/7388)). |
 | unknown-logical-type.parquet | A file containing a column annotated with a LogicalType whose identifier has been set to an abitrary high value to check the behaviour of an old reader reading a file written by a new writer containing an unsupported type (see [related issue](https://github.com/apache/arrow/issues/41764)). |
 | int96_from_spark.parquet | Single column of (deprecated) int96 values that originated as Apache Spark microsecond-resolution timestamps. Some values are outside the range typically representable by 64-bit nanosecond-resolution timestamps. See [int96_from_spark.md](int96_from_spark.md) for details. |
 
