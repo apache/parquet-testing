@@ -25,11 +25,12 @@ raw binary data.
 
 ## Structure
 
-Each example consists of three files:
+* `data_dictionary.json` - contains the JSON representation of each of the examples
+
+Each example consists of 2 files:
 
 * `.metadata` -- the binary contents of the `metadata` field
 * `.value` -- the binary contents of the `value` field
-* `.json` -- the equivalent JSON 
 
 ## Descriptions
 

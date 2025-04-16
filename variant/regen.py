@@ -27,6 +27,7 @@
 from pyspark.sql import SparkSession
 import pyarrow.parquet as pq
 import os
+import json
 
 # Initialize Spark session and create variant data via SQL
 spark = SparkSession.builder \
@@ -124,9 +125,8 @@ for statement in sql.split("\n"):
 mypath = 'spark-warehouse/output'
 parquet_files = [f for f in os.listdir(mypath) if f.endswith('.parquet')]
 
-print("Parquet files:", parquet_files)
-
 # extract the values from the parquet files
+data_dictionary = {}
 for f in parquet_files:
     table = pq.read_table(os.path.join(mypath, f))
     for row in range(len(table)):
@@ -149,8 +149,16 @@ for f in parquet_files:
             buffer = value.as_buffer()
             if buffer is not None:
                 f.write(buffer)
-        with open(f"{name}.json", "wb") as f:
-            buffer = json_value.as_buffer()
-            if buffer is not None:
-                f.write(buffer)
+
+        # Add the JSON representation to the data dictionary
+        name = name.as_py()
+        json_value = json_value.as_py()
+
+        if json_value is not None:
+            data_dictionary[name] = json.loads(json_value)
+        else:
+            data_dictionary[name] = None
+
+with open(f"data_dictionary.json", "w") as f:
+    f.write(json.dumps(data_dictionary, indent=4))
 
