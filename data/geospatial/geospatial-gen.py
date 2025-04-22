@@ -152,6 +152,7 @@ def calc_stats_shapely(wkts):
     geometries = shapely.from_wkt(wkts)
 
     # Calculate the list of iso type codes
+    any_not_null = any(geom is not None for geom in geometries)
     type_codes = set(geometry_type_code(wkt) for wkt in wkts)
 
     # Calculate min/max ignoring nan values
@@ -169,7 +170,7 @@ def calc_stats_shapely(wkts):
     stats = {}
     stats["geospatial_types"] = list(
         sorted(code for code in type_codes if code is not None)
-    )
+    ) if any_not_null else None
     stats["xmin"], stats["ymin"], stats["zmin"], stats["mmin"] = coord_mins
     stats["xmax"], stats["ymax"], stats["zmax"], stats["mmax"] = coord_maxes
 
