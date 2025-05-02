@@ -56,7 +56,7 @@ CREATE TABLE T (name VARCHAR(2000), variant_col VARIANT);
 -- https://github.com/apache/parquet-format/blob/master/VariantEncoding.md#encoding-types
 --
 -- Spark Types: https://spark.apache.org/docs/latest/sql-ref-datatypes.html
--- Note: must use explicit typecasts as Ppark returns an error for implicit casts
+-- Note: must use explicit typecasts as Spark returns an error for implicit casts
 INSERT INTO T VALUES ('primitive_null', NULL);
 INSERT INTO T VALUES ('primitive_boolean_true', true::Variant);
 INSERT INTO T VALUES ('primitive_boolean_false', false::Variant);
@@ -78,8 +78,8 @@ INSERT INTO T VALUES ('primitive_string', 'This string is longer than 64 bytes a
 -- https://github.com/apache/parquet-testing/issues/79
 -- is not clear how to create the following types using Spark SQL
 -- TODO TimeNTZ                    (Type ID 17)
--- TODO 'timestamp with timezone'  (Type ID 18)
--- TODO 'timestamp with time zone' (Type ID 19)
+-- TODO 'timestamp with timezone (NANOS)'  (Type ID 18)
+-- TODO 'timestamp with time zone (NANOS)' (Type ID 19)
 -- TODO 'UUID'                     (Type ID 20)
 
 -------------------------------
