@@ -56,7 +56,7 @@ CREATE TABLE T (name VARCHAR(2000), variant_col VARIANT);
 -- https://github.com/apache/parquet-format/blob/master/VariantEncoding.md#encoding-types
 --
 -- Spark Types: https://spark.apache.org/docs/latest/sql-ref-datatypes.html
--- Note: use  explicit typecasts as spark returns an error for implicit casts
+-- Note: must use explicit typecasts as Ppark returns an error for implicit casts
 INSERT INTO T VALUES ('primitive_null', NULL);
 INSERT INTO T VALUES ('primitive_boolean_true', true::Variant);
 INSERT INTO T VALUES ('primitive_boolean_false', false::Variant);
@@ -74,7 +74,8 @@ INSERT INTO T VALUES ('primitive_timestampntz', '2025-04-16T12:34:56.78'::Timest
 INSERT INTO T VALUES ('primitive_float', 1234567890.1234::Float::Variant);
 INSERT INTO T VALUES ('primitive_binary', X'31337deadbeefcafe'::Variant);
 INSERT INTO T VALUES ('primitive_string', 'This string is longer than 64 bytes and therefore does not fit in a short_string and it also includes several non ascii characters such as 🐢, 💖, ♥️, 🎣 and 🤦!!'::Variant);
--- It is not clear how to create these types using Spark SQL
+
+-- TODO is not clear how to create the following types using Spark SQL
 -- TODO TimeNTZ                    (Type ID 17)
 -- TODO 'timestamp with timezone'  (Type ID 18)
 -- TODO 'timestamp with time zone' (Type ID 19)
@@ -89,13 +90,13 @@ INSERT INTO T VALUES ('short_string', 'Less than 64 bytes (❤️ with utf8)'::V
 -- Object (basic_type=2)
 -------------------------------
 -- Use parse_json to create Variant, as spark does not seem to support casting structs --> Variant.
--- TODO create example variant objects with fields that have more specific types (like timestamp, date, etc)
---   cannot cast "STRUCT<...>" to "VARIANT""
--- INSERT INTO T VALUES ('object_primitive', struct(1234.56::Double as double_field, true as boolean_true_field, false as boolean_false_field, '2025-04-16T12:34:56.78'::Timestamp as timestamp_field, 'Apache Parquet' as string_field, null as null_field)::Variant);
 INSERT INTO T VALUES ('object_empty', parse_json('{}')::Variant);
 INSERT INTO T VALUES ('object_primitive', parse_json('{"int_field" : 1, "double_field": 1.23456789, "boolean_true_field": true, "boolean_false_field": false, "string_field": "Apache Parquet", "null_field": null, "timestamp_field": "2025-04-16T12:34:56.78"}')::Variant);
 INSERT INTO T VALUES ('object_nested', parse_json('{ "id" : 1, "species" : { "name": "lava monster", "population": 12345}, "observation" : { "time": "12:34:56", "location": "In the Volcano", "value" : { "temperature": 123, "humidity": 456 } } }')::Variant);
 
+-- TODO create example variant objects with fields that non-json types (like timestamp, date, etc)
+-- Casting from "STRUCT<...>" to "VARIANT"" is not yet supported
+-- INSERT INTO T VALUES ('object_primitive', struct(1234.56::Double as double_field, true as boolean_true_field, false as boolean_false_field, '2025-04-16T12:34:56.78'::Timestamp as timestamp_field, 'Apache Parquet' as string_field, null as null_field)::Variant);
 --TODO objects with more than 2**8 distinct fields (that require using more than one byte for field offset)
 --TODO objects with more than 2**16 distinct fields (that require using more than 2 bytes for field offset)
 --TODO objects with more than 2**24 distinct fields (that require using more than 3 bytes for field offset)
@@ -105,13 +106,14 @@ INSERT INTO T VALUES ('object_nested', parse_json('{ "id" : 1, "species" : { "na
 -------------------------------
 INSERT INTO T VALUES ('array_empty', parse_json('[]')::Variant);
 INSERT INTO T VALUES ('array_primitive', parse_json('[2, 1, 5, 9]')::Variant);
-INSERT INTO T VALUES ('array_nested', parse_json('[ { "id": 1, "thing": { "names": ["Contrarian", "Spider"] } }, { "id": 2, "type": "if", "names": ["Apple", "Ray", null] } ]')::Variant);
+INSERT INTO T VALUES ('array_nested', parse_json('[ { "id": 1, "thing": { "names": ["Contrarian", "Spider"] } }, null, { "id": 2, "type": "if", "names": ["Apple", "Ray", null] } ]')::Variant);
 
 -- TODO arrays with more than 2**8 distinct elements (that require using more than one byte for count)
--- TODO arrays where the total length of all values is greater than 2**8, 2**16, and 2**24 bytes (requires using more than one byte for the offsets)
+-- TODO arrays where the total length of all values is greater than 2**8, 2**16, and 2**24 bytes (that require using more than one byte for the offsets)
 
-
--- Copy the output to a new table that also has the JSON representation of the variant column
+-------------------------------
+-- Output the value to a new table that also has the JSON representation of the variant column
+-------------------------------
 DROP TABLE IF EXISTS output;
 CREATE TABLE output AS SELECT name, variant_col, to_json(variant_col) as json_col FROM T;
 """
@@ -160,5 +162,9 @@ for f in parquet_files:
             data_dictionary[name] = None
 
 with open(f"data_dictionary.json", "w") as f:
-    f.write(json.dumps(data_dictionary, indent=4))
+    f.write(json.dumps(data_dictionary, sort_keys = True, indent=4))
 
+# Note: It is possible to write the output to a single parquet file, using a command
+# such as:
+# spark.sql("SELECT * FROM output").repartition(1).write.parquet('variant.parquet')
+# At the time of writing, this file does not have the logical type annotation for VARIANT
