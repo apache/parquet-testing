@@ -75,7 +75,8 @@ INSERT INTO T VALUES ('primitive_float', 1234567890.1234::Float::Variant);
 INSERT INTO T VALUES ('primitive_binary', X'31337deadbeefcafe'::Variant);
 INSERT INTO T VALUES ('primitive_string', 'This string is longer than 64 bytes and therefore does not fit in a short_string and it also includes several non ascii characters such as 🐢, 💖, ♥️, 🎣 and 🤦!!'::Variant);
 
--- TODO is not clear how to create the following types using Spark SQL
+-- https://github.com/apache/parquet-testing/issues/79
+-- is not clear how to create the following types using Spark SQL
 -- TODO TimeNTZ                    (Type ID 17)
 -- TODO 'timestamp with timezone'  (Type ID 18)
 -- TODO 'timestamp with time zone' (Type ID 19)
@@ -94,6 +95,7 @@ INSERT INTO T VALUES ('object_empty', parse_json('{}')::Variant);
 INSERT INTO T VALUES ('object_primitive', parse_json('{"int_field" : 1, "double_field": 1.23456789, "boolean_true_field": true, "boolean_false_field": false, "string_field": "Apache Parquet", "null_field": null, "timestamp_field": "2025-04-16T12:34:56.78"}')::Variant);
 INSERT INTO T VALUES ('object_nested', parse_json('{ "id" : 1, "species" : { "name": "lava monster", "population": 6789}, "observation" : { "time": "12:34:56", "location": "In the Volcano", "value" : { "temperature": 123, "humidity": 456 } } }')::Variant);
 
+-- https://github.com/apache/parquet-testing/issues/77
 -- TODO create example variant objects with fields that non-json types (like timestamp, date, etc)
 -- Casting from "STRUCT<...>" to "VARIANT"" is not yet supported
 -- INSERT INTO T VALUES ('object_primitive', struct(1234.56::Double as double_field, true as boolean_true_field, false as boolean_false_field, '2025-04-16T12:34:56.78'::Timestamp as timestamp_field, 'Apache Parquet' as string_field, null as null_field)::Variant);
@@ -108,6 +110,7 @@ INSERT INTO T VALUES ('array_empty', parse_json('[]')::Variant);
 INSERT INTO T VALUES ('array_primitive', parse_json('[2, 1, 5, 9]')::Variant);
 INSERT INTO T VALUES ('array_nested', parse_json('[ { "id": 1, "thing": { "names": ["Contrarian", "Spider"] } }, null, { "id": 2, "type": "if", "names": ["Apple", "Ray", null] } ]')::Variant);
 
+-- https://github.com/apache/parquet-testing/issues/78
 -- TODO arrays with more than 2**8 distinct elements (that require using more than one byte for count)
 -- TODO arrays where the total length of all values is greater than 2**8, 2**16, and 2**24 bytes (that require using more than one byte for the offsets)
 
