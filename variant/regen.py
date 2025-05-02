@@ -92,7 +92,7 @@ INSERT INTO T VALUES ('short_string', 'Less than 64 bytes (❤️ with utf8)'::V
 -- Use parse_json to create Variant, as spark does not seem to support casting structs --> Variant.
 INSERT INTO T VALUES ('object_empty', parse_json('{}')::Variant);
 INSERT INTO T VALUES ('object_primitive', parse_json('{"int_field" : 1, "double_field": 1.23456789, "boolean_true_field": true, "boolean_false_field": false, "string_field": "Apache Parquet", "null_field": null, "timestamp_field": "2025-04-16T12:34:56.78"}')::Variant);
-INSERT INTO T VALUES ('object_nested', parse_json('{ "id" : 1, "species" : { "name": "lava monster", "population": 12345}, "observation" : { "time": "12:34:56", "location": "In the Volcano", "value" : { "temperature": 123, "humidity": 456 } } }')::Variant);
+INSERT INTO T VALUES ('object_nested', parse_json('{ "id" : 1, "species" : { "name": "lava monster", "population": 6789}, "observation" : { "time": "12:34:56", "location": "In the Volcano", "value" : { "temperature": 123, "humidity": 456 } } }')::Variant);
 
 -- TODO create example variant objects with fields that non-json types (like timestamp, date, etc)
 -- Casting from "STRUCT<...>" to "VARIANT"" is not yet supported
