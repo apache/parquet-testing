@@ -17,3 +17,9 @@
   ~ under the License.
   -->
 # Testing Data and Utilities for Apache Parquet
+
+- [data](data/README.md) - Sample Parquet data files for testing
+- [bad_data](bad_data/README.md) - Reproducers for bad data files for testing
+- [variant](variant/README.md) - Sample [Variant] binary values
+
+[Variant]: https://github.com/apache/parquet-format/blob/master/VariantEncoding.md
