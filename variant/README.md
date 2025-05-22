@@ -56,7 +56,7 @@ any metadata for `null` and left `primitive_null.metadata` empty.
 The metadata for `primitive_null` should be the same 3 bytes as other primitive types 
 * header = `0x01`
 * dictionary_size = `0x00`
-* `dictionary_size+1` `1` byte vales values: `0x00` 
+* `dictionary_size + 1 = 1` byte values: `0x00` 
 
 ```shell
 cp primitive_int8.metadata primitive_null.metadata
