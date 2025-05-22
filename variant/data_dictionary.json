@@ -63,7 +63,7 @@
     "primitive_float": 1234567940.0,
     "primitive_int16": 1234,
     "primitive_int32": 123456,
-    "primitive_int64": 12345678,
+    "primitive_int64": 1234567890123456789,
     "primitive_int8": 42,
     "primitive_null": null,
     "primitive_string": "This string is longer than 64 bytes and therefore does not fit in a short_string and it also includes several non ascii characters such as \ud83d\udc22, \ud83d\udc96, \u2665\ufe0f, \ud83c\udfa3 and \ud83e\udd26!!",
