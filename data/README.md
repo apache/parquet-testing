@@ -60,6 +60,7 @@
 | datapage_v2_empty_datapage.snappy.parquet | A compressed FLOAT column with DataPageV2, a single row, value is null, the file uses Snappy compression, but there is no data for uncompression (see [related issue](https://github.com/apache/arrow-rs/issues/7388)). The zero bytes must not be attempted to be uncompressed, as this is an invalid Snappy stream. |
 | unknown-logical-type.parquet | A file containing a column annotated with a LogicalType whose identifier has been set to an abitrary high value to check the behaviour of an old reader reading a file written by a new writer containing an unsupported type (see [related issue](https://github.com/apache/arrow/issues/41764)). |
 | int96_from_spark.parquet | Single column of (deprecated) int96 values that originated as Apache Spark microsecond-resolution timestamps. Some values are outside the range typically representable by 64-bit nanosecond-resolution timestamps. See [int96_from_spark.md](int96_from_spark.md) for details. |
+| binary_truncated_min_max.parquet | A file containing six columns with exact, fully-truncated and partially-truncated max and min statistics and with the expected is_{min/max}_value_exact.  (see [note](Binary-truncated-min-and-max-statistics)).|
 
 TODO: Document what each file is in the table above.
 
@@ -452,4 +453,70 @@ message schema {
     REPEATED BYTE_ARRAY String_list_in_group (UTF8);
   }
 }
+```
+
+## Binary truncated min and max statistics
+
+For the file: binary_truncated_min_max.parquet
+
+The file contains six columns written with parquet-rs 55.1.0 with `statistics_truncate_length=2`.
+The contents are the following:
+
+|column_name                |min      |is_min_value_exact|max            |is_max_value_exact|
+| ------------------------- | ------- | ---------------- | ------------- | ---------------- |
+|utf8_full_truncation       |"Al"     |false             |"Kf"           |false             |
+|binary_full_truncation     |"0x416C" |false             |"0x4B66"       |false             |
+|utf8_partial_truncation    |"Al"     |false             |"🚀Kevin Bacon"|true              |
+|binary_partial_truncation  |"0x416C" |false             |"0xFFFF0102"   |true              |
+|utf8_no_truncation         |"Al"     |true              |"Ke"           |true              |
+|binary_no_truncation       |"0x416C" |true              |"0x4B65"       |true              |
+
+Columns `utf8_full_truncation` and `binary_full_truncation` are truncating the min/max values and `is_{min/max}_value_exact` are false.
+Columns `utf8_partial_truncation` and `binary_partial_truncation` are truncating min value but can't truncate the maximum value. `is_min_value_exact` is false but `is_max_value_exact` is true.
+Columns `utf8_no_truncation` and `binary_no_truncation` contain min and max value that fit on min/max. Both `is_{min/max}_value_exact` are true.
+
+Some info:
+```
+$ java -jar parquet-cli/target/parquet-cli-1.16.0-SNAPSHOT-runtime.jar meta /home/raulcd/code/parquet_truncate_file_generator/binary_truncated_min_max.parquet
+
+File path:  /home/raulcd/code/parquet_truncate_file_generator/binary_truncated_min_max.parquet
+Created by: parquet-rs version 55.1.0
+Properties:
+  ARROW:schema: /////6wBAAAQAAAAAAAKAAwACgAJAAQACgAAABAAAAAAAQQACAAIAAAABAAIAAAABAAAAAYAAABAAQAA9AAAALgAAAB4AAAAQAAAAAQAAADo/v//FAAAAAwAAAAAAAAEDAAAAAAAAADY/v//FAAAAGJpbmFyeV9ub190cnVuY2F0aW9uAAAAACD///8UAAAADAAAAAAAAAUMAAAAAAAAABD///8SAAAAdXRmOF9ub190cnVuY2F0aW9uAABU////FAAAAAwAAAAAAAAEDAAAAAAAAABE////GQAAAGJpbmFyeV9wYXJ0aWFsX3RydW5jYXRpb24AAACQ////FAAAAAwAAAAAAAAFDAAAAAAAAACA////FwAAAHV0ZjhfcGFydGlhbF90cnVuY2F0aW9uAMj///8UAAAADAAAAAAAAAQMAAAAAAAAALj///8WAAAAYmluYXJ5X2Z1bGxfdHJ1bmNhdGlvbgAAEAAUABAAAAAPAAQAAAAIABAAAAAYAAAADAAAAAAAAAUQAAAAAAAAAAQABAAEAAAAFAAAAHV0ZjhfZnVsbF90cnVuY2F0aW9uAAAAAA==
+Schema:
+message arrow_schema {
+  required binary utf8_full_truncation (STRING);
+  required binary binary_full_truncation;
+  required binary utf8_partial_truncation (STRING);
+  required binary binary_partial_truncation;
+  required binary utf8_no_truncation (STRING);
+  required binary binary_no_truncation;
+}
+
+
+Row group 0:  count: 12  117.83 B records  start: 4  total(compressed): 1.381 kB total(uncompressed):1.381 kB
+--------------------------------------------------------------------------------
+                           type      encodings count     avg size   nulls   min / max
+utf8_full_truncation       BINARY    _ BB_     12        20.83 B    0       "Al" / "Kf"
+binary_full_truncation     BINARY    _ BB_     12        20.83 B    0       "0x416C" / "0x4B66"
+utf8_partial_truncation    BINARY    _ BB_     12        21.50 B    0       "Al" / "🚀Kevin Bacon"
+binary_partial_truncation  BINARY    _ BB_     12        19.67 B    0       "0x416C" / "0xFFFF0102"
+utf8_no_truncation         BINARY    _ BB_     12        17.50 B    0       "Al" / "Ke"
+binary_no_truncation       BINARY    _ BB_     12        17.50 B    0       "0x416C" / "0x4B65"
+```
+and
+```
+java -jar parquet-cli/target/parquet-cli-1.16.0-SNAPSHOT-runtime.jar cat /home/raulcd/code/parquet_truncate_file_generator/binary_truncated_min_max.parquet
+{"utf8_full_truncation": "Blart Versenwald III", "binary_full_truncation": "Blart Versenwald III", "utf8_partial_truncation": "Blart Versenwald III", "binary_partial_truncation": "Blart Versenwald III", "utf8_no_truncation": "Blart Versenwald III", "binary_no_truncation": "Blart Versenwald III"}
+{"utf8_full_truncation": "Alice Johnson", "binary_full_truncation": "Alice Johnson", "utf8_partial_truncation": "Alice Johnson", "binary_partial_truncation": "Alice Johnson", "utf8_no_truncation": "Al", "binary_no_truncation": "Al"}
+{"utf8_full_truncation": "Bob Smith", "binary_full_truncation": "Bob Smith", "utf8_partial_truncation": "Bob Smith", "binary_partial_truncation": "Bob Smith", "utf8_no_truncation": "Bob Smith", "binary_no_truncation": "Bob Smith"}
+{"utf8_full_truncation": "Charlie Brown", "binary_full_truncation": "Charlie Brown", "utf8_partial_truncation": "Charlie Brown", "binary_partial_truncation": "Charlie Brown", "utf8_no_truncation": "Charlie Brown", "binary_no_truncation": "Charlie Brown"}
+{"utf8_full_truncation": "Diana Prince", "binary_full_truncation": "Diana Prince", "utf8_partial_truncation": "Diana Prince", "binary_partial_truncation": "Diana Prince", "utf8_no_truncation": "Diana Prince", "binary_no_truncation": "Diana Prince"}
+{"utf8_full_truncation": "Edward Norton", "binary_full_truncation": "Edward Norton", "utf8_partial_truncation": "Edward Norton", "binary_partial_truncation": "Edward Norton", "utf8_no_truncation": "Edward Norton", "binary_no_truncation": "Edward Norton"}
+{"utf8_full_truncation": "Fiona Apple", "binary_full_truncation": "Fiona Apple", "utf8_partial_truncation": "Fiona Apple", "binary_partial_truncation": "Fiona Apple", "utf8_no_truncation": "Fiona Apple", "binary_no_truncation": "Fiona Apple"}
+{"utf8_full_truncation": "George Lucas", "binary_full_truncation": "George Lucas", "utf8_partial_truncation": "George Lucas", "binary_partial_truncation": "George Lucas", "utf8_no_truncation": "George Lucas", "binary_no_truncation": "George Lucas"}
+{"utf8_full_truncation": "Helen Keller", "binary_full_truncation": "Helen Keller", "utf8_partial_truncation": "Helen Keller", "binary_partial_truncation": "Helen Keller", "utf8_no_truncation": "Helen Keller", "binary_no_truncation": "Helen Keller"}
+{"utf8_full_truncation": "Ivan Drago", "binary_full_truncation": "Ivan Drago", "utf8_partial_truncation": "Ivan Drago", "binary_partial_truncation": "Ivan Drago", "utf8_no_truncation": "Ivan Drago", "binary_no_truncation": "Ivan Drago"}
+{"utf8_full_truncation": "Julia Roberts", "binary_full_truncation": "Julia Roberts", "utf8_partial_truncation": "Julia Roberts", "binary_partial_truncation": "Julia Roberts", "utf8_no_truncation": "Julia Roberts", "binary_no_truncation": "Julia Roberts"}
+{"utf8_full_truncation": "Kevin Bacon", "binary_full_truncation": "Kevin Bacon", "utf8_partial_truncation": "🚀Kevin Bacon", "binary_partial_truncation": "ÿÿ\u0001\u0002", "utf8_no_truncation": "Ke", "binary_no_truncation": "Ke"}
 ```
