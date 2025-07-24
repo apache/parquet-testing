@@ -231,6 +231,7 @@
 }, {
   "case_number" : 40,
   "test" : "testArrayWithElementValueTypedValueConflict",
+  "parquet_file" : "case-040.parquet",
   "error_message" : "Invalid variant, conflicting value and typed_value"
 }, {
   "case_number" : 41,
@@ -241,6 +242,7 @@
 }, {
   "case_number" : 42,
   "test" : "testValueAndTypedValueConflict",
+  "parquet_file" : "case-042.parquet",
   "error_message" : "Invalid variant, conflicting value and typed_value"
 }, {
   "case_number" : 43,
@@ -509,6 +511,7 @@
 }, {
   "case_number" : 87,
   "test" : "testNonObjectWithNonNullShreddedFields",
+  "parquet_file" : "case-087.parquet",
   "error_message" : "Invalid variant, non-object value with shredded fields"
 }, {
   "case_number" : 88,
@@ -747,10 +750,12 @@
 }, {
   "case_number" : 127,
   "test" : "testUnsignedInteger",
+  "parquet_file" : "case-127.parquet",
   "error_message" : "Unsupported shredded value type: INTEGER(32,false)"
 }, {
   "case_number" : 128,
   "test" : "testEmptyPartiallyShreddedObjectConflict",
+  "parquet_file" : "case-128.parquet",
   "error_message" : "Invalid variant, non-object value with shredded fields"
 }, {
   "case_number" : 129,
@@ -803,6 +808,7 @@
 }, {
   "case_number" : 137,
   "test" : "testFixedLengthByteArray",
+  "parquet_file" : "case-137.parquet",
   "error_message" : "Unsupported shredded value type: optional fixed_len_byte_array(4) typed_value"
 }, {
   "case_number" : 138,
