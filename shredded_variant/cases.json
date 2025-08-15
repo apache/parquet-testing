@@ -137,25 +137,25 @@
   "test" : "testShreddedVariantPrimitives",
   "parquet_file" : "case-024.parquet",
   "variant_file" : "case-024_row-0.variant.bin",
-  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=123456.7890))"
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=12345.6789))"
 }, {
   "case_number" : 25,
   "test" : "testShreddedVariantPrimitives",
   "parquet_file" : "case-025.parquet",
   "variant_file" : "case-025_row-0.variant.bin",
-  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=-123456.7890))"
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=-12345.6789))"
 }, {
   "case_number" : 26,
   "test" : "testShreddedVariantPrimitives",
   "parquet_file" : "case-026.parquet",
   "variant_file" : "case-026_row-0.variant.bin",
-  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=1234567890.987654321))"
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=123456789.987654321))"
 }, {
   "case_number" : 27,
   "test" : "testShreddedVariantPrimitives",
   "parquet_file" : "case-027.parquet",
   "variant_file" : "case-027_row-0.variant.bin",
-  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=-1234567890.987654321))"
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=-123456789.987654321))"
 }, {
   "case_number" : 28,
   "test" : "testShreddedVariantPrimitives",
@@ -247,8 +247,9 @@
 }, {
   "case_number" : 43,
   "test" : "testPartiallyShreddedObjectMissingFieldConflict",
-  "parquet_file" : "case-043.parquet",
-  "variant_file" : "case-043_row-0.variant.bin",
+  "notes" : "This parquet file is not valid according to the spec and implementations can choose to error, or read the shredded value",
+  "parquet_file" : "case-043-INVALID.parquet",
+  "variant_file" : "case-043-INVALID_row-0.variant.bin",
   "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=NULL, value=null)}))"
 }, {
   "case_number" : 44,
@@ -399,25 +400,25 @@
   "test" : "testUnshreddedVariants",
   "parquet_file" : "case-068.parquet",
   "variant_file" : "case-068_row-0.variant.bin",
-  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=123456.7890))"
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=12345.6789))"
 }, {
   "case_number" : 69,
   "test" : "testUnshreddedVariants",
   "parquet_file" : "case-069.parquet",
   "variant_file" : "case-069_row-0.variant.bin",
-  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=-123456.7890))"
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=-12345.6789))"
 }, {
   "case_number" : 70,
   "test" : "testUnshreddedVariants",
   "parquet_file" : "case-070.parquet",
   "variant_file" : "case-070_row-0.variant.bin",
-  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=1234567890.987654321))"
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=123456789.987654321))"
 }, {
   "case_number" : 71,
   "test" : "testUnshreddedVariants",
   "parquet_file" : "case-071.parquet",
   "variant_file" : "case-071_row-0.variant.bin",
-  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=-1234567890.987654321))"
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=-123456789.987654321))"
 }, {
   "case_number" : 72,
   "test" : "testUnshreddedVariants",
@@ -493,8 +494,9 @@
 }, {
   "case_number" : 84,
   "test" : "testShreddedObjectWithOptionalFieldStructs",
-  "parquet_file" : "case-084.parquet",
-  "variant_file" : "case-084_row-0.variant.bin",
+  "notes" : "This parquet file is not valid according to the spec and implementations can choose to error, or read the shredded value",
+  "parquet_file" : "case-084-INVALID.parquet",
+  "variant_file" : "case-084-INVALID_row-0.variant.bin",
   "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=INT32, value=34), b: Variant(type=STRING, value=iceberg)}))"
 }, {
   "case_number" : 85,
@@ -650,25 +652,25 @@
   "test" : "testUnshreddedVariantsWithShreddedSchema",
   "parquet_file" : "case-110.parquet",
   "variant_file" : "case-110_row-0.variant.bin",
-  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=123456.7890))"
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=12345.6789))"
 }, {
   "case_number" : 111,
   "test" : "testUnshreddedVariantsWithShreddedSchema",
   "parquet_file" : "case-111.parquet",
   "variant_file" : "case-111_row-0.variant.bin",
-  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=-123456.7890))"
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=-12345.6789))"
 }, {
   "case_number" : 112,
   "test" : "testUnshreddedVariantsWithShreddedSchema",
   "parquet_file" : "case-112.parquet",
   "variant_file" : "case-112_row-0.variant.bin",
-  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=1234567890.987654321))"
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=123456789.987654321))"
 }, {
   "case_number" : 113,
   "test" : "testUnshreddedVariantsWithShreddedSchema",
   "parquet_file" : "case-113.parquet",
   "variant_file" : "case-113_row-0.variant.bin",
-  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=-1234567890.987654321))"
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=-123456789.987654321))"
 }, {
   "case_number" : 114,
   "test" : "testUnshreddedVariantsWithShreddedSchema",
@@ -738,8 +740,9 @@
 }, {
   "case_number" : 125,
   "test" : "testPartiallyShreddedObjectFieldConflict",
-  "parquet_file" : "case-125.parquet",
-  "variant_file" : "case-125_row-0.variant.bin",
+  "notes" : "This parquet file is not valid according to the spec and implementations can choose to error, or read the shredded value",
+  "parquet_file" : "case-125-INVALID.parquet",
+  "variant_file" : "case-125-INVALID_row-0.variant.bin",
   "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=NULL, value=null), b: Variant(type=STRING, value=iceberg)}))"
 }, {
   "case_number" : 126,
