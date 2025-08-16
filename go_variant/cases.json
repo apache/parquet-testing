@@ -1,0 +1,822 @@
+[ {
+  "case_number" : 1,
+  "test" : "testSimpleArray",
+  "parquet_file" : "case-001.parquet",
+  "variant_file" : "case-001_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=VariantArray([Variant(type=STRING, value=comedy), Variant(type=STRING, value=drama)]))"
+}, {
+  "case_number" : 2,
+  "test" : "testEmptyArray",
+  "parquet_file" : "case-002.parquet",
+  "variant_file" : "case-002_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=VariantArray([]))"
+}, {
+  "case_number" : 3
+}, {
+  "case_number" : 4,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-004.parquet",
+  "variant_file" : "case-004_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=BOOLEAN_TRUE, value=true))"
+}, {
+  "case_number" : 5,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-005.parquet",
+  "variant_file" : "case-005_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=BOOLEAN_FALSE, value=false))"
+}, {
+  "case_number" : 6,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-006.parquet",
+  "variant_file" : "case-006_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT8, value=34))"
+}, {
+  "case_number" : 7,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-007.parquet",
+  "variant_file" : "case-007_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT8, value=-34))"
+}, {
+  "case_number" : 8,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-008.parquet",
+  "variant_file" : "case-008_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT16, value=1234))"
+}, {
+  "case_number" : 9,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-009.parquet",
+  "variant_file" : "case-009_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT16, value=-1234))"
+}, {
+  "case_number" : 10,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-010.parquet",
+  "variant_file" : "case-010_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT32, value=12345))"
+}, {
+  "case_number" : 11,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-011.parquet",
+  "variant_file" : "case-011_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT32, value=-12345))"
+}, {
+  "case_number" : 12,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-012.parquet",
+  "variant_file" : "case-012_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT64, value=9876543210))"
+}, {
+  "case_number" : 13,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-013.parquet",
+  "variant_file" : "case-013_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT64, value=-9876543210))"
+}, {
+  "case_number" : 14,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-014.parquet",
+  "variant_file" : "case-014_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=FLOAT, value=10.11))"
+}, {
+  "case_number" : 15,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-015.parquet",
+  "variant_file" : "case-015_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=FLOAT, value=-10.11))"
+}, {
+  "case_number" : 16,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-016.parquet",
+  "variant_file" : "case-016_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DOUBLE, value=14.3))"
+}, {
+  "case_number" : 17,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-017.parquet",
+  "variant_file" : "case-017_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DOUBLE, value=-14.3))"
+}, {
+  "case_number" : 18,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-018.parquet",
+  "variant_file" : "case-018_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DATE, value=2024-11-07))"
+}, {
+  "case_number" : 19,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-019.parquet",
+  "variant_file" : "case-019_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DATE, value=1957-11-07))"
+}, {
+  "case_number" : 20,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-020.parquet",
+  "variant_file" : "case-020_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPTZ, value=2024-11-07T12:33:54.123456+00:00))"
+}, {
+  "case_number" : 21,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-021.parquet",
+  "variant_file" : "case-021_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPTZ, value=1957-11-07T12:33:54.123456+00:00))"
+}, {
+  "case_number" : 22,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-022.parquet",
+  "variant_file" : "case-022_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPNTZ, value=2024-11-07T12:33:54.123456))"
+}, {
+  "case_number" : 23,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-023.parquet",
+  "variant_file" : "case-023_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPNTZ, value=1957-11-07T12:33:54.123456))"
+}, {
+  "case_number" : 24,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-024.parquet",
+  "variant_file" : "case-024_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=12345.6789))"
+}, {
+  "case_number" : 25,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-025.parquet",
+  "variant_file" : "case-025_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=-12345.6789))"
+}, {
+  "case_number" : 26,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-026.parquet",
+  "variant_file" : "case-026_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=123456789.987654321))"
+}, {
+  "case_number" : 27,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-027.parquet",
+  "variant_file" : "case-027_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=-123456789.987654321))"
+}, {
+  "case_number" : 28,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-028.parquet",
+  "variant_file" : "case-028_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL16, value=9876543210.123456789))"
+}, {
+  "case_number" : 29,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-029.parquet",
+  "variant_file" : "case-029_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL16, value=-9876543210.123456789))"
+}, {
+  "case_number" : 30,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-030.parquet",
+  "variant_file" : "case-030_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=BINARY, value=0A0B0C0D))"
+}, {
+  "case_number" : 31,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-031.parquet",
+  "variant_file" : "case-031_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=STRING, value=iceberg))"
+}, {
+  "case_number" : 32,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-032.parquet",
+  "variant_file" : "case-032_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIME, value=12:33:54.123456))"
+}, {
+  "case_number" : 33,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-033.parquet",
+  "variant_file" : "case-033_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPTZ_NANOS, value=2024-11-07T12:33:54.123456789+00:00))"
+}, {
+  "case_number" : 34,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-034.parquet",
+  "variant_file" : "case-034_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPTZ_NANOS, value=1957-11-07T12:33:54.123456789+00:00))"
+}, {
+  "case_number" : 35,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-035.parquet",
+  "variant_file" : "case-035_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPNTZ_NANOS, value=2024-11-07T12:33:54.123456789))"
+}, {
+  "case_number" : 36,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-036.parquet",
+  "variant_file" : "case-036_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPNTZ_NANOS, value=1957-11-07T12:33:54.123456789))"
+}, {
+  "case_number" : 37,
+  "test" : "testShreddedVariantPrimitives",
+  "parquet_file" : "case-037.parquet",
+  "variant_file" : "case-037_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=UUID, value=f24f9b64-81fa-49d1-b74e-8c09a6e31c56))"
+}, {
+  "case_number" : 38,
+  "test" : "testShreddedObjectMissingTypedValue",
+  "parquet_file" : "case-038.parquet",
+  "variant_file" : "case-038_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={b: Variant(type=STRING, value=iceberg)}))"
+}, {
+  "case_number" : 39,
+  "test" : "testNonObjectWithNullShreddedFields",
+  "parquet_file" : "case-039.parquet",
+  "variant_file" : "case-039_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=Variant(type=INT32, value=34))"
+}, {
+  "case_number" : 40,
+  "test" : "testArrayWithElementValueTypedValueConflict",
+  "parquet_file" : "case-040.parquet",
+  "error_message" : "Invalid variant, conflicting value and typed_value"
+}, {
+  "case_number" : 41,
+  "test" : "testArrayMissingValueColumn",
+  "parquet_file" : "case-041.parquet",
+  "variant_file" : "case-041_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=VariantArray([Variant(type=STRING, value=comedy), Variant(type=STRING, value=drama)]))"
+}, {
+  "case_number" : 42,
+  "test" : "testValueAndTypedValueConflict",
+  "parquet_file" : "case-042.parquet",
+  "error_message" : "Invalid variant, conflicting value and typed_value"
+}, {
+  "case_number" : 43,
+  "test" : "testPartiallyShreddedObjectMissingFieldConflict",
+  "notes" : "This parquet file is not valid according to the spec and implementations can choose to error, or read the shredded value",
+  "parquet_file" : "case-043-INVALID.parquet",
+  "variant_file" : "case-043-INVALID_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=NULL, value=null)}))"
+}, {
+  "case_number" : 44,
+  "test" : "testShreddedObjectWithinShreddedObject",
+  "parquet_file" : "case-044.parquet",
+  "variant_file" : "case-044_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={c: VariantObject(fields={a: Variant(type=INT32, value=34), b: Variant(type=STRING, value=iceberg)}), d: Variant(type=DOUBLE, value=-0.0)}))"
+}, {
+  "case_number" : 45,
+  "test" : "testArrayWithNestedObject",
+  "parquet_file" : "case-045.parquet",
+  "variant_files" : [ "case-045_row-0.variant.bin", "case-045_row-1.variant.bin", "case-045_row-2.variant.bin", "case-045_row-3.variant.bin" ],
+  "variants" : "[Variant(metadata=VariantMetadata(dict={}), value=VariantArray([Variant(type=STRING, value=comedy), Variant(type=STRING, value=drama)])), Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT32, value=34)), Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=NULL, value=null), d: Variant(type=STRING, value=iceberg)})), Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantArray([Variant(type=STRING, value=action), Variant(type=STRING, value=horror)]))]"
+}, {
+  "case_number" : 46,
+  "test" : "testShreddedObject",
+  "parquet_file" : "case-046.parquet",
+  "variant_file" : "case-046_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=NULL, value=null), b: Variant(type=STRING, value=)}))"
+}, {
+  "case_number" : 47,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-047.parquet",
+  "variant_file" : "case-047_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=NULL, value=null))"
+}, {
+  "case_number" : 48,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-048.parquet",
+  "variant_file" : "case-048_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=BOOLEAN_TRUE, value=true))"
+}, {
+  "case_number" : 49,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-049.parquet",
+  "variant_file" : "case-049_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=BOOLEAN_FALSE, value=false))"
+}, {
+  "case_number" : 50,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-050.parquet",
+  "variant_file" : "case-050_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT8, value=34))"
+}, {
+  "case_number" : 51,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-051.parquet",
+  "variant_file" : "case-051_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT8, value=-34))"
+}, {
+  "case_number" : 52,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-052.parquet",
+  "variant_file" : "case-052_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT16, value=1234))"
+}, {
+  "case_number" : 53,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-053.parquet",
+  "variant_file" : "case-053_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT16, value=-1234))"
+}, {
+  "case_number" : 54,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-054.parquet",
+  "variant_file" : "case-054_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT32, value=12345))"
+}, {
+  "case_number" : 55,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-055.parquet",
+  "variant_file" : "case-055_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT32, value=-12345))"
+}, {
+  "case_number" : 56,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-056.parquet",
+  "variant_file" : "case-056_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT64, value=9876543210))"
+}, {
+  "case_number" : 57,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-057.parquet",
+  "variant_file" : "case-057_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT64, value=-9876543210))"
+}, {
+  "case_number" : 58,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-058.parquet",
+  "variant_file" : "case-058_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=FLOAT, value=10.11))"
+}, {
+  "case_number" : 59,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-059.parquet",
+  "variant_file" : "case-059_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=FLOAT, value=-10.11))"
+}, {
+  "case_number" : 60,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-060.parquet",
+  "variant_file" : "case-060_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DOUBLE, value=14.3))"
+}, {
+  "case_number" : 61,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-061.parquet",
+  "variant_file" : "case-061_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DOUBLE, value=-14.3))"
+}, {
+  "case_number" : 62,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-062.parquet",
+  "variant_file" : "case-062_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DATE, value=2024-11-07))"
+}, {
+  "case_number" : 63,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-063.parquet",
+  "variant_file" : "case-063_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DATE, value=1957-11-07))"
+}, {
+  "case_number" : 64,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-064.parquet",
+  "variant_file" : "case-064_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPTZ, value=2024-11-07T12:33:54.123456+00:00))"
+}, {
+  "case_number" : 65,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-065.parquet",
+  "variant_file" : "case-065_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPTZ, value=1957-11-07T12:33:54.123456+00:00))"
+}, {
+  "case_number" : 66,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-066.parquet",
+  "variant_file" : "case-066_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPNTZ, value=2024-11-07T12:33:54.123456))"
+}, {
+  "case_number" : 67,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-067.parquet",
+  "variant_file" : "case-067_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPNTZ, value=1957-11-07T12:33:54.123456))"
+}, {
+  "case_number" : 68,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-068.parquet",
+  "variant_file" : "case-068_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=12345.6789))"
+}, {
+  "case_number" : 69,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-069.parquet",
+  "variant_file" : "case-069_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=-12345.6789))"
+}, {
+  "case_number" : 70,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-070.parquet",
+  "variant_file" : "case-070_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=123456789.987654321))"
+}, {
+  "case_number" : 71,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-071.parquet",
+  "variant_file" : "case-071_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=-123456789.987654321))"
+}, {
+  "case_number" : 72,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-072.parquet",
+  "variant_file" : "case-072_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL16, value=9876543210.123456789))"
+}, {
+  "case_number" : 73,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-073.parquet",
+  "variant_file" : "case-073_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL16, value=-9876543210.123456789))"
+}, {
+  "case_number" : 74,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-074.parquet",
+  "variant_file" : "case-074_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=BINARY, value=0A0B0C0D))"
+}, {
+  "case_number" : 75,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-075.parquet",
+  "variant_file" : "case-075_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=STRING, value=iceberg))"
+}, {
+  "case_number" : 76,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-076.parquet",
+  "variant_file" : "case-076_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIME, value=12:33:54.123456))"
+}, {
+  "case_number" : 77,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-077.parquet",
+  "variant_file" : "case-077_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPTZ_NANOS, value=2024-11-07T12:33:54.123456789+00:00))"
+}, {
+  "case_number" : 78,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-078.parquet",
+  "variant_file" : "case-078_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPTZ_NANOS, value=1957-11-07T12:33:54.123456789+00:00))"
+}, {
+  "case_number" : 79,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-079.parquet",
+  "variant_file" : "case-079_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPNTZ_NANOS, value=2024-11-07T12:33:54.123456789))"
+}, {
+  "case_number" : 80,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-080.parquet",
+  "variant_file" : "case-080_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPNTZ_NANOS, value=1957-11-07T12:33:54.123456789))"
+}, {
+  "case_number" : 81,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-081.parquet",
+  "variant_file" : "case-081_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=UUID, value=f24f9b64-81fa-49d1-b74e-8c09a6e31c56))"
+}, {
+  "case_number" : 82,
+  "test" : "testUnshreddedVariants",
+  "parquet_file" : "case-082.parquet",
+  "variant_file" : "case-082_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=NULL, value=null), d: Variant(type=STRING, value=iceberg)}))"
+}, {
+  "case_number" : 83,
+  "test" : "testMixedRecords",
+  "parquet_file" : "case-083.parquet",
+  "variant_files" : [ null, "case-083_row-1.variant.bin", "case-083_row-2.variant.bin", "case-083_row-3.variant.bin" ],
+  "variants" : "[null, Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={c: VariantObject(fields={b: Variant(type=STRING, value=iceberg)})})), Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={c: Variant(type=INT8, value=8), d: Variant(type=DOUBLE, value=-0.0)})), Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={c: VariantObject(fields={a: Variant(type=INT32, value=34), b: Variant(type=STRING, value=)}), d: Variant(type=DOUBLE, value=0.0)}))]"
+}, {
+  "case_number" : 84,
+  "test" : "testShreddedObjectWithOptionalFieldStructs",
+  "notes" : "This parquet file is not valid according to the spec and implementations can choose to error, or read the shredded value",
+  "parquet_file" : "case-084-INVALID.parquet",
+  "variant_file" : "case-084-INVALID_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=INT32, value=34), b: Variant(type=STRING, value=iceberg)}))"
+}, {
+  "case_number" : 85,
+  "test" : "testArrayWithElementNullValueAndNullTypedValue",
+  "parquet_file" : "case-085.parquet",
+  "variant_file" : "case-085_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=VariantArray([Variant(type=NULL, value=null)]))"
+}, {
+  "case_number" : 86,
+  "test" : "testArrayWithNull",
+  "parquet_file" : "case-086.parquet",
+  "variant_file" : "case-086_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=VariantArray([Variant(type=STRING, value=comedy), Variant(type=NULL, value=null), Variant(type=STRING, value=drama)]))"
+}, {
+  "case_number" : 87,
+  "test" : "testNonObjectWithNonNullShreddedFields",
+  "parquet_file" : "case-087.parquet",
+  "error_message" : "Invalid variant, non-object value with shredded fields"
+}, {
+  "case_number" : 88,
+  "test" : "testArrayMissingElementValueColumn",
+  "parquet_file" : "case-088.parquet",
+  "variant_file" : "case-088_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=VariantArray([Variant(type=STRING, value=comedy), Variant(type=STRING, value=drama)]))"
+}, {
+  "case_number" : 89,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-089.parquet",
+  "variant_file" : "case-089_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=NULL, value=null))"
+}, {
+  "case_number" : 90,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-090.parquet",
+  "variant_file" : "case-090_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=BOOLEAN_TRUE, value=true))"
+}, {
+  "case_number" : 91,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-091.parquet",
+  "variant_file" : "case-091_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=BOOLEAN_FALSE, value=false))"
+}, {
+  "case_number" : 92,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-092.parquet",
+  "variant_file" : "case-092_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT8, value=34))"
+}, {
+  "case_number" : 93,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-093.parquet",
+  "variant_file" : "case-093_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT8, value=-34))"
+}, {
+  "case_number" : 94,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-094.parquet",
+  "variant_file" : "case-094_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT16, value=1234))"
+}, {
+  "case_number" : 95,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-095.parquet",
+  "variant_file" : "case-095_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT16, value=-1234))"
+}, {
+  "case_number" : 96,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-096.parquet",
+  "variant_file" : "case-096_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT32, value=12345))"
+}, {
+  "case_number" : 97,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-097.parquet",
+  "variant_file" : "case-097_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT32, value=-12345))"
+}, {
+  "case_number" : 98,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-098.parquet",
+  "variant_file" : "case-098_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT64, value=9876543210))"
+}, {
+  "case_number" : 99,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-099.parquet",
+  "variant_file" : "case-099_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT64, value=-9876543210))"
+}, {
+  "case_number" : 100,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-100.parquet",
+  "variant_file" : "case-100_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=FLOAT, value=10.11))"
+}, {
+  "case_number" : 101,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-101.parquet",
+  "variant_file" : "case-101_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=FLOAT, value=-10.11))"
+}, {
+  "case_number" : 102,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-102.parquet",
+  "variant_file" : "case-102_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DOUBLE, value=14.3))"
+}, {
+  "case_number" : 103,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-103.parquet",
+  "variant_file" : "case-103_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DOUBLE, value=-14.3))"
+}, {
+  "case_number" : 104,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-104.parquet",
+  "variant_file" : "case-104_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DATE, value=2024-11-07))"
+}, {
+  "case_number" : 105,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-105.parquet",
+  "variant_file" : "case-105_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DATE, value=1957-11-07))"
+}, {
+  "case_number" : 106,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-106.parquet",
+  "variant_file" : "case-106_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPTZ, value=2024-11-07T12:33:54.123456+00:00))"
+}, {
+  "case_number" : 107,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-107.parquet",
+  "variant_file" : "case-107_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPTZ, value=1957-11-07T12:33:54.123456+00:00))"
+}, {
+  "case_number" : 108,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-108.parquet",
+  "variant_file" : "case-108_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPNTZ, value=2024-11-07T12:33:54.123456))"
+}, {
+  "case_number" : 109,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-109.parquet",
+  "variant_file" : "case-109_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPNTZ, value=1957-11-07T12:33:54.123456))"
+}, {
+  "case_number" : 110,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-110.parquet",
+  "variant_file" : "case-110_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=12345.6789))"
+}, {
+  "case_number" : 111,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-111.parquet",
+  "variant_file" : "case-111_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL4, value=-12345.6789))"
+}, {
+  "case_number" : 112,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-112.parquet",
+  "variant_file" : "case-112_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=123456789.987654321))"
+}, {
+  "case_number" : 113,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-113.parquet",
+  "variant_file" : "case-113_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL8, value=-123456789.987654321))"
+}, {
+  "case_number" : 114,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-114.parquet",
+  "variant_file" : "case-114_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL16, value=9876543210.123456789))"
+}, {
+  "case_number" : 115,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-115.parquet",
+  "variant_file" : "case-115_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=DECIMAL16, value=-9876543210.123456789))"
+}, {
+  "case_number" : 116,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-116.parquet",
+  "variant_file" : "case-116_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=BINARY, value=0A0B0C0D))"
+}, {
+  "case_number" : 117,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-117.parquet",
+  "variant_file" : "case-117_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=STRING, value=iceberg))"
+}, {
+  "case_number" : 118,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-118.parquet",
+  "variant_file" : "case-118_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIME, value=12:33:54.123456))"
+}, {
+  "case_number" : 119,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-119.parquet",
+  "variant_file" : "case-119_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPTZ_NANOS, value=2024-11-07T12:33:54.123456789+00:00))"
+}, {
+  "case_number" : 120,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-120.parquet",
+  "variant_file" : "case-120_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPTZ_NANOS, value=1957-11-07T12:33:54.123456789+00:00))"
+}, {
+  "case_number" : 121,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-121.parquet",
+  "variant_file" : "case-121_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPNTZ_NANOS, value=2024-11-07T12:33:54.123456789))"
+}, {
+  "case_number" : 122,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-122.parquet",
+  "variant_file" : "case-122_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=TIMESTAMPNTZ_NANOS, value=1957-11-07T12:33:54.123456789))"
+}, {
+  "case_number" : 123,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-123.parquet",
+  "variant_file" : "case-123_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=UUID, value=f24f9b64-81fa-49d1-b74e-8c09a6e31c56))"
+}, {
+  "case_number" : 124,
+  "test" : "testUnshreddedVariantsWithShreddedSchema",
+  "parquet_file" : "case-124.parquet",
+  "variant_file" : "case-124_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=NULL, value=null), d: Variant(type=STRING, value=iceberg)}))"
+}, {
+  "case_number" : 125,
+  "test" : "testPartiallyShreddedObjectFieldConflict",
+  "notes" : "This parquet file is not valid according to the spec and implementations can choose to error, or read the shredded value",
+  "parquet_file" : "case-125-INVALID.parquet",
+  "variant_file" : "case-125-INVALID_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=NULL, value=null), b: Variant(type=STRING, value=iceberg)}))"
+}, {
+  "case_number" : 126,
+  "test" : "testArrayWithNestedObject",
+  "parquet_file" : "case-126.parquet",
+  "variant_files" : [ "case-126_row-0.variant.bin", "case-126_row-1.variant.bin" ],
+  "variants" : "[Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantArray([VariantObject(fields={a: Variant(type=INT32, value=1), b: Variant(type=STRING, value=comedy)}), VariantObject(fields={a: Variant(type=INT32, value=2), b: Variant(type=STRING, value=drama)})])), Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantArray([VariantObject(fields={a: Variant(type=INT32, value=3), b: Variant(type=STRING, value=action), c: Variant(type=STRING, value=str)}), VariantObject(fields={a: Variant(type=INT32, value=4), b: Variant(type=STRING, value=horror), d: Variant(type=DATE, value=2024-01-30)})]))]"
+}, {
+  "case_number" : 127,
+  "test" : "testUnsignedInteger",
+  "parquet_file" : "case-127.parquet",
+  "error_message" : "Unsupported shredded value type: INTEGER(32,false)"
+}, {
+  "case_number" : 128,
+  "test" : "testEmptyPartiallyShreddedObjectConflict",
+  "parquet_file" : "case-128.parquet",
+  "error_message" : "Invalid variant, non-object value with shredded fields"
+}, {
+  "case_number" : 129,
+  "test" : "testNullValueAndNullTypedValue",
+  "parquet_file" : "case-129.parquet",
+  "variant_file" : "case-129_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=NULL, value=null))"
+}, {
+  "case_number" : 130,
+  "test" : "testEmptyShreddedObject",
+  "parquet_file" : "case-130.parquet",
+  "variant_file" : "case-130_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={}))"
+}, {
+  "case_number" : 131,
+  "test" : "testMissingValueColumn",
+  "parquet_file" : "case-131.parquet",
+  "variant_file" : "case-131_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT32, value=34))"
+}, {
+  "case_number" : 132,
+  "test" : "testShreddedObjectMissingFieldValueColumn",
+  "parquet_file" : "case-132.parquet",
+  "variant_file" : "case-132_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={b: Variant(type=STRING, value=iceberg)}))"
+}, {
+  "case_number" : 133,
+  "test" : "testShreddedObjectMissingField",
+  "parquet_file" : "case-133.parquet",
+  "variant_file" : "case-133_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=BOOLEAN_FALSE, value=false)}))"
+}, {
+  "case_number" : 134,
+  "test" : "testPartiallyShreddedObject",
+  "parquet_file" : "case-134.parquet",
+  "variant_file" : "case-134_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=NULL, value=null), b: Variant(type=STRING, value=iceberg), d: Variant(type=DATE, value=2024-01-30)}))"
+}, {
+  "case_number" : 135,
+  "test" : "testNullArray",
+  "parquet_file" : "case-135.parquet",
+  "variant_file" : "case-135_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=NULL, value=null))"
+}, {
+  "case_number" : 136,
+  "test" : "testNestedArray",
+  "parquet_file" : "case-136.parquet",
+  "variant_file" : "case-136_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={}), value=VariantArray([VariantArray([Variant(type=STRING, value=comedy), Variant(type=STRING, value=drama)]), VariantArray([])]))"
+}, {
+  "case_number" : 137,
+  "test" : "testFixedLengthByteArray",
+  "parquet_file" : "case-137.parquet",
+  "error_message" : "Unsupported shredded value type: optional fixed_len_byte_array(4) typed_value"
+}, {
+  "case_number" : 138,
+  "test" : "testShreddedObjectMissingValueColumn",
+  "parquet_file" : "case-138.parquet",
+  "variant_file" : "case-138_row-0.variant.bin",
+  "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=INT16, value=1234), b: Variant(type=STRING, value=iceberg)}))"
+} ]
