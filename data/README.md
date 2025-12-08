@@ -521,3 +521,20 @@ java -jar parquet-cli/target/parquet-cli-1.16.0-SNAPSHOT-runtime.jar cat /home/r
 {"utf8_full_truncation": "Julia Roberts", "binary_full_truncation": "Julia Roberts", "utf8_partial_truncation": "Julia Roberts", "binary_partial_truncation": "Julia Roberts", "utf8_no_truncation": "Julia Roberts", "binary_no_truncation": "Julia Roberts"}
 {"utf8_full_truncation": "Kevin Bacon", "binary_full_truncation": "Kevin Bacon", "utf8_partial_truncation": "🚀Kevin Bacon", "binary_partial_truncation": "ÿÿ\u0001\u0002", "utf8_no_truncation": "Ke", "binary_no_truncation": "Ke"}
 ```
+
+## Floating point encoding dataset
+Spotify1
+  valence, acousticness, danceability, energy, instrumentalness, liveness, loudness, tempo, speechiness
+
+Spotify2
+  valence, acousticness, danceability, energy, instrumentalness, liveness, loudness, tempo, speechiness
+
+POI dataset
+  latitude_radian, longitude_radian
+
+Common Government dataset
+  amount1, amount2, amount3
+
+Arade dataset
+  value1, value2, value3, value4
+
