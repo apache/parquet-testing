@@ -107,7 +107,6 @@ The `encrypt_columns_and_footer_bloom_filter.parquet.encrypted` file enables Blo
 on `double_field` and `float_field` and is used by encrypted Bloom filter
 reader tests.
 
-
 ## Checksum Files
 
 The schema for the `datapage_v1-*-checksum.parquet` test files is:
