@@ -103,9 +103,7 @@ external key material enabled, so the key material is found in the
 This data was written using the `org.apache.parquet.crypto.keytools.mocks.InMemoryKMS` KMS client,
 which is compatible with the `TestOnlyInServerWrapKms` KMS client used in C++ tests.
 
-The `encrypt_columns_and_footer_bloom_filter.parquet.encrypted` file enables Bloom filters
-on `double_field` and `float_field` and is used by encrypted Bloom filter
-reader tests.
+The `encrypt_columns_and_footer_bloom_filter.parquet.encrypted` file enables Bloom filters on `double_field` and `float_field` and is used by encrypted Bloom filter reader tests.
 
 ## Checksum Files
 
