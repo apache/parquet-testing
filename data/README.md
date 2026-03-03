@@ -103,6 +103,9 @@ external key material enabled, so the key material is found in the
 This data was written using the `org.apache.parquet.crypto.keytools.mocks.InMemoryKMS` KMS client,
 which is compatible with the `TestOnlyInServerWrapKms` KMS client used in C++ tests.
 
+The `encrypt_columns_and_footer_bloom_filter.parquet.encrypted` file enables Bloom filters
+on `double_field` and `float_field`.
+
 The files in `data/aes256` were encrypted with the following keys and key ids (when using key\_retriever) using parquet-mr:
 * Encrypted/Signed Footer:
   * key:   {0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1}
@@ -155,6 +158,8 @@ The corresponding schema is:
       new PrimitiveType(OPTIONAL, BINARY, BINARY_FIELD_NAME),
       Types.required(FIXED_LEN_BYTE_ARRAY).length(FIXED_LENGTH).named(FIXED_LENGTH_BINARY_FIELD_NAME));
 ```
+  
+Finally, byte order is LITTLE_ENDIAN and PageWrite checksum is diabled.  
 
 ## Checksum Files
 
