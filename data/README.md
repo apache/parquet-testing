@@ -135,31 +135,30 @@ The files in `data/aes256` were encrypted with the following keys and key ids (w
   * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,9}
   * key_id: "kc8"
 
-The corresponding schema is:
+The corresponding schema in Java is:
 
 ```java
-  public static final String BOOLEAN_FIELD_NAME = "boolean_field";
-  public static final String INT32_FIELD_NAME = "int32_field";
-  public static final String INT64_FIELD_NAME = "int64_field";
-  public static final String INT96_FIELD_NAME = "int96_field";
-  public static final String FLOAT_FIELD_NAME = "float_field";
-  public static final String DOUBLE_FIELD_NAME = "double_field";
-  public static final String BINARY_FIELD_NAME = "ba_field";
-  public static final String FIXED_LENGTH_BINARY_FIELD_NAME = "flba_field";
+// byte order is LITTLE_ENDIAN and PageWrite checksum is disabled.
+public static final String BOOLEAN_FIELD_NAME = "boolean_field";
+public static final String INT32_FIELD_NAME = "int32_field";
+public static final String INT64_FIELD_NAME = "int64_field";
+public static final String INT96_FIELD_NAME = "int96_field";
+public static final String FLOAT_FIELD_NAME = "float_field";
+public static final String DOUBLE_FIELD_NAME = "double_field";
+public static final String BINARY_FIELD_NAME = "ba_field";
+public static final String FIXED_LENGTH_BINARY_FIELD_NAME = "flba_field";
 
-  private static final MessageType SCHEMA = new MessageType(
-      "schema",
-      new PrimitiveType(REQUIRED, BOOLEAN, BOOLEAN_FIELD_NAME),
-      Types.required(INT32).as(LogicalTypeAnnotation.timeType(true, MILLIS)).named(INT32_FIELD_NAME),
-      new PrimitiveType(REPEATED, INT64, INT64_FIELD_NAME),
-      Types.required(INT96).named(INT96_FIELD_NAME),
-      new PrimitiveType(REQUIRED, FLOAT, FLOAT_FIELD_NAME),
-      new PrimitiveType(REQUIRED, DOUBLE, DOUBLE_FIELD_NAME),
-      new PrimitiveType(OPTIONAL, BINARY, BINARY_FIELD_NAME),
-      Types.required(FIXED_LEN_BYTE_ARRAY).length(FIXED_LENGTH).named(FIXED_LENGTH_BINARY_FIELD_NAME));
+private static final MessageType SCHEMA = new MessageType(
+    "schema",
+    new PrimitiveType(REQUIRED, BOOLEAN, BOOLEAN_FIELD_NAME),
+    Types.required(INT32).as(LogicalTypeAnnotation.timeType(true, MILLIS)).named(INT32_FIELD_NAME),
+    new PrimitiveType(REPEATED, INT64, INT64_FIELD_NAME),
+    Types.required(INT96).named(INT96_FIELD_NAME),
+    new PrimitiveType(REQUIRED, FLOAT, FLOAT_FIELD_NAME),
+    new PrimitiveType(REQUIRED, DOUBLE, DOUBLE_FIELD_NAME),
+    new PrimitiveType(OPTIONAL, BINARY, BINARY_FIELD_NAME),
+    Types.required(FIXED_LEN_BYTE_ARRAY).length(FIXED_LENGTH).named(FIXED_LENGTH_BINARY_FIELD_NAME));
 ```
-  
-Finally, byte order is LITTLE_ENDIAN and PageWrite checksum is diabled.  
 
 ## Checksum Files
 
