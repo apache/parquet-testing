@@ -103,6 +103,59 @@ external key material enabled, so the key material is found in the
 This data was written using the `org.apache.parquet.crypto.keytools.mocks.InMemoryKMS` KMS client,
 which is compatible with the `TestOnlyInServerWrapKms` KMS client used in C++ tests.
 
+The files in `data/aes256` were encrypted with the following keys and key ids (when using key\_retriever) using parquet-mr:
+* Encrypted/Signed Footer:
+  * key:   {0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1}
+  * key_id: "kf"
+* Encrypted column named double_field (including column and offset index):
+  * key:  {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2}
+  * key_id: "kc1"
+* Encrypted column named float_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,3}
+  * key_id: "kc2"
+* Encrypted column named boolean_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,4}
+  * key_id: "kc3"
+* Encrypted column named int32_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,5}
+  * key_id: "kc4"
+* Encrypted column named ba_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,6}
+  * key_id: "kc5"
+* Encrypted column named flba_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,7}
+  * key_id: "kc6"
+* Encrypted column named int64_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,8}
+  * key_id: "kc7"
+* Encrypted column named int96_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,9}
+  * key_id: "kc8"
+
+The corresponding schema is:
+
+```java
+  public static final String BOOLEAN_FIELD_NAME = "boolean_field";
+  public static final String INT32_FIELD_NAME = "int32_field";
+  public static final String INT64_FIELD_NAME = "int64_field";
+  public static final String INT96_FIELD_NAME = "int96_field";
+  public static final String FLOAT_FIELD_NAME = "float_field";
+  public static final String DOUBLE_FIELD_NAME = "double_field";
+  public static final String BINARY_FIELD_NAME = "ba_field";
+  public static final String FIXED_LENGTH_BINARY_FIELD_NAME = "flba_field";
+
+  private static final MessageType SCHEMA = new MessageType(
+      "schema",
+      new PrimitiveType(REQUIRED, BOOLEAN, BOOLEAN_FIELD_NAME),
+      Types.required(INT32).as(LogicalTypeAnnotation.timeType(true, MILLIS)).named(INT32_FIELD_NAME),
+      new PrimitiveType(REPEATED, INT64, INT64_FIELD_NAME),
+      Types.required(INT96).named(INT96_FIELD_NAME),
+      new PrimitiveType(REQUIRED, FLOAT, FLOAT_FIELD_NAME),
+      new PrimitiveType(REQUIRED, DOUBLE, DOUBLE_FIELD_NAME),
+      new PrimitiveType(OPTIONAL, BINARY, BINARY_FIELD_NAME),
+      Types.required(FIXED_LEN_BYTE_ARRAY).length(FIXED_LENGTH).named(FIXED_LENGTH_BINARY_FIELD_NAME));
+```
+
 ## Checksum Files
 
 The schema for the `datapage_v1-*-checksum.parquet` test files is:
