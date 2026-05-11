@@ -142,6 +142,7 @@ The corresponding schema in Java is:
 public static final String BOOLEAN_FIELD_NAME = "boolean_field";
 public static final String INT32_FIELD_NAME = "int32_field";
 public static final String INT64_FIELD_NAME = "int64_field";
+public static final String INT64_ELEMENT_COLUMN_PATH = "int64_field.list.element";
 public static final String INT96_FIELD_NAME = "int96_field";
 public static final String FLOAT_FIELD_NAME = "float_field";
 public static final String DOUBLE_FIELD_NAME = "double_field";
@@ -152,12 +153,21 @@ private static final MessageType SCHEMA = new MessageType(
     "schema",
     new PrimitiveType(REQUIRED, BOOLEAN, BOOLEAN_FIELD_NAME),
     Types.required(INT32).as(LogicalTypeAnnotation.timeType(true, MILLIS)).named(INT32_FIELD_NAME),
-    new PrimitiveType(REPEATED, INT64, INT64_FIELD_NAME),
+    Types.optionalGroup().repeatedGroup().required(INT64).named("element").named("list").as(LogicalTypeAnnotation.listType()).named(INT64_FIELD_NAME),
     Types.required(INT96).named(INT96_FIELD_NAME),
     new PrimitiveType(REQUIRED, FLOAT, FLOAT_FIELD_NAME),
     new PrimitiveType(REQUIRED, DOUBLE, DOUBLE_FIELD_NAME),
     new PrimitiveType(OPTIONAL, BINARY, BINARY_FIELD_NAME),
     Types.required(FIXED_LEN_BYTE_ARRAY).length(FIXED_LENGTH).named(FIXED_LENGTH_BINARY_FIELD_NAME));
+
+// ColumnEncryptionProperties for the list field
+Map<ColumnPath, ColumnEncryptionProperties> columnPropertiesMap = new HashMap<>();
+ColumnEncryptionProperties columnPropertiesInt64List = ColumnEncryptionProperties.builder(
+        ColumnPath.fromDotString(INT64_ELEMENT_COLUMN_PATH))
+    .withKey(COLUMN_ENCRYPTION_KEYS[6])
+    .withKeyID(COLUMN_ENCRYPTION_KEY_IDS[6])
+    .build();
+columnPropertiesMap.put(columnPropertiesInt64List.getPath(), columnPropertiesInt64List);
 ```
 
 ## Checksum Files
