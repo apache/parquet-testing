@@ -65,3 +65,18 @@ GEOMETRY and GEOGRAPHY.
   parameter set to an arbitrary string value. The Parquet format does not
   restrict the value of the crs parameter and implementations may choose to
   attempt interpreting the value or error.
+
+- `geography-points.parquet`: Contains a GEOGRAPHY column with 100,000 points
+  roughly equally spaced on a sphere using the golden ratio method. Points
+  are sorted by Hilbert curve and split into row groups of 1000 rows each
+  to test spatial predicate pushdown.
+
+- `geography-lines.parquet`: Contains a GEOGRAPHY column with lines connecting
+  consecutive points from a spatially sorted point set. Lines are sorted by
+  Hilbert curve and split into row groups of 1000 rows each to test spatial
+  predicate pushdown.
+
+- `geography-polygons.parquet`: Contains a GEOGRAPHY column with polygons
+  created by buffering each of the 100,000 roughly equally spaced sphere points
+  with a 30km radius. Polygons are sorted by Hilbert curve and split into
+  row groups of 1000 rows each to test spatial predicate pushdown.
