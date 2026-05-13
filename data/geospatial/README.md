@@ -66,17 +66,17 @@ GEOMETRY and GEOGRAPHY.
   restrict the value of the crs parameter and implementations may choose to
   attempt interpreting the value or error.
 
-- `geography-points.parquet`: Contains a GEOGRAPHY column with 100,000 points
+- `geography-points.parquet`: Contains a GEOGRAPHY column with 10,000 points
   roughly equally spaced on a sphere using the golden ratio method. Points
-  are sorted by Hilbert curve and split into row groups of 1000 rows each
+  are sorted by Hilbert curve and split into row groups of 100 rows each
   to test spatial predicate pushdown.
 
 - `geography-lines.parquet`: Contains a GEOGRAPHY column with lines connecting
   consecutive points from a spatially sorted point set. Lines are sorted by
-  Hilbert curve and split into row groups of 1000 rows each to test spatial
+  Hilbert curve and split into row groups of 100 rows each to test spatial
   predicate pushdown.
 
 - `geography-polygons.parquet`: Contains a GEOGRAPHY column with polygons
-  created by buffering each of the 100,000 roughly equally spaced sphere points
-  with a 30km radius. Polygons are sorted by Hilbert curve and split into
-  row groups of 1000 rows each to test spatial predicate pushdown.
+  created by buffering each of the 10,000 roughly equally spaced sphere points
+  with a 100km radius. Polygons are sorted by Hilbert curve and split into
+  row groups of 100 rows each to test spatial predicate pushdown.

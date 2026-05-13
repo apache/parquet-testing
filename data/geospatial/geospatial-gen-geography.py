@@ -26,7 +26,7 @@ from pathlib import Path
 HERE = Path(__file__).parent
 
 
-def generate_points(n=100_000):
+def generate_points(n):
     # Generate roughly equally spaced points on the sphere
     golden_ratio = (1 + np.sqrt(5)) / 2
     indices = np.arange(n)
@@ -49,17 +49,17 @@ def generate_points(n=100_000):
 
 def write_points():
     sd = sedona.db.connect()
-    sd.create_data_frame(generate_points(100_000)).to_parquet(
+    sd.create_data_frame(generate_points(500)).to_parquet(
         HERE / "geography-points.parquet",
         sort_by="geometry",
-        max_row_group_size=1000,
+        max_row_group_size=10,
         geoparquet_version="none",
     )
 
 
 def write_lines():
     sd = sedona.db.connect()
-    sd.create_data_frame(generate_points(100_000)).to_view("pts")
+    sd.create_data_frame(generate_points(500)).to_view("pts")
 
     # Sort so that points make sense sequentially
     points_tab = sd.sql(
@@ -81,20 +81,20 @@ def write_lines():
     """).to_parquet(
         HERE / "geography-lines.parquet",
         sort_by="geometry",
-        max_row_group_size=1000,
+        max_row_group_size=10,
         geoparquet_version="none",
     )
 
 
 def write_polygons():
     sd = sedona.db.connect()
-    sd.create_data_frame(generate_points(100_000)).to_view("pts")
+    sd.create_data_frame(generate_points(500)).to_view("pts")
     sd.sql(
-        "SELECT id, ST_Buffer(geometry, 30000, 'quad_segs=1') as geometry from pts"
+        "SELECT id, ST_Buffer(geometry, 500000, 'quad_segs=1') as geometry from pts"
     ).to_parquet(
         HERE / "geography-polygons.parquet",
         sort_by="geometry",
-        max_row_group_size=1000,
+        max_row_group_size=10,
         geoparquet_version="none",
     )
 
