@@ -31,14 +31,14 @@ Properties:
   writer.model.name: example
 Schema:
 message schema {
-  required fixed_len_byte_array(4) flba_field;
+  optional fixed_len_byte_array(4) flba_field;
 }
 
 
-Row group 0:  count: 1000  3.84 B records  start: 4  total(compressed): 3.749 kB total(uncompressed):3.749 kB
+Row group 0:  count: 1000  3,94 B records  start: 4  total(compressed): 3,848 kB total(uncompressed):3,848 kB 
 --------------------------------------------------------------------------------
             type      encodings count     avg size   nulls   min / max
-flba_field  FIXED[4] _   _     1000      3.84 B   105     "0x00000001" / "0x000003E8"
+flba_field  FIXED[4] _   _     1000      3,94 B   105     "0x00000001" / "0x000003E8"
 ```
 
 # Column Index (from parquet-cli column-index command)
@@ -59,15 +59,15 @@ page-8                         9  0x00000065                                0x00
 page-9                         6  0x00000001                                0x00000064
 
 offset index for column flba_field:
-                          offset   compressed size       first row index
-page-0                         4               390                     0
-page-1                       394               390                   100
-page-2                       784               350                   200
-page-3                      1134               386                   300
-page-4                      1520               373                   400
-page-5                      1893               382                   500
-page-6                      2275               382                   600
-page-7                      2657               394                   700
-page-8                      3051               390                   800
-page-9                      3441               402                   900
+                          offset       compressed size       first row index       unencoded bytes
+page-0                         4                   400                     0                     -
+page-1                       404                   400                   100                     -
+page-2                       804                   361                   200                     -
+page-3                      1165                   396                   300                     -
+page-4                      1561                   384                   400                     -
+page-5                      1945                   392                   500                     -
+page-6                      2337                   392                   600                     -
+page-7                      2729                   404                   700                     -
+page-8                      3133                   400                   800                     -
+page-9                      3533                   411                   900                     -
 ```
