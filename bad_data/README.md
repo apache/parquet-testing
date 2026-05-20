@@ -34,4 +34,4 @@ These are files used for reproducing various bugs that have been reported.
 * ARROW-GH-45185.parquet: test case of https://github.com/apache/arrow/issues/45185
   where repetition levels start with a 1 instead of 0.
 * ARROW-GH-47662.parquet: test case identified in https://github.com/apache/arrow/issues/47662
-  where a required column contains null values.
+  where a required column contains null values. Incorrect version of data/fixed_length_byte_array.parquet.
