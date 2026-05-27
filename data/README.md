@@ -62,6 +62,7 @@
 | unknown-logical-type.parquet | A file containing a column annotated with a LogicalType whose identifier has been set to an abitrary high value to check the behaviour of an old reader reading a file written by a new writer containing an unsupported type (see [related issue](https://github.com/apache/arrow/issues/41764)). |
 | int96_from_spark.parquet | Single column of (deprecated) int96 values that originated as Apache Spark microsecond-resolution timestamps. Some values are outside the range typically representable by 64-bit nanosecond-resolution timestamps. See [int96_from_spark.md](int96_from_spark.md) for details. |
 | binary_truncated_min_max.parquet | A file containing six columns with exact, fully-truncated and partially-truncated max and min statistics and with the expected is_{min/max}_value_exact.  (see [note](Binary-truncated-min-and-max-statistics)).|
+| backward_compat_nested.parquet | A file containing a nested schema that was created with older writer list of backward compatibility cases for testing readers. See [backward_compat_nested.md](backward_compat_nested.md) for details. |
 
 TODO: Document what each file is in the table above.
 
