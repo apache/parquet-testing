@@ -65,3 +65,27 @@ GEOMETRY and GEOGRAPHY.
   parameter set to an arbitrary string value. The Parquet format does not
   restrict the value of the crs parameter and implementations may choose to
   attempt interpreting the value or error.
+
+- `geography-points.parquet`: Contains a GEOGRAPHY column with 500 points
+  roughly equally spaced on a sphere using the golden ratio method. Points
+  are sorted by Hilbert curve and split into row groups of 10 rows each
+  to test spatial predicate pushdown. The points in the file contain
+  both the North and South Poles (`POINT (0 90)` and `POINT (0 -90)`).
+  At least one row group contains wraparound statistics (i.e., `xmin > xmax`).
+
+- `geography-lines.parquet`: Contains a GEOGRAPHY column with lines connecting
+  consecutive points from a spatially sorted point set. Lines are sorted by
+  Hilbert curve and split into row groups of 10 rows each to test spatial
+  predicate pushdown. There are two lines that intersect the North Pole,
+  two lines that intersect the South Pole, and several lines that contain
+  vertices on either side of the antimeridian. At least one row group
+  contains wraparound statistics (i.e., `xmin > xmax`).
+
+- `geography-polygons.parquet`: Contains a GEOGRAPHY column with polygons
+  created by buffering each of the 500 roughly equally spaced sphere points
+  with a 500km radius. Polygons are sorted by Hilbert curve and split into
+  row groups of 10 rows each to test spatial predicate pushdown. There is
+  a polygon that contains the North Pole and a polygon that contains the
+  South Pole and several polygons that contain vertices on either side of
+  the antimeridian. At least one row group contains wraparound statistics
+  (i.e., `xmin > xmax`).
