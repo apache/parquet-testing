@@ -61,6 +61,7 @@
 | datapage_v2_empty_datapage.snappy.parquet | A compressed FLOAT column with DataPageV2, a single row, value is null, the file uses Snappy compression, but there is no data for uncompression (see [related issue](https://github.com/apache/arrow-rs/issues/7388)). The zero bytes must not be attempted to be uncompressed, as this is an invalid Snappy stream. |
 | unknown-logical-type.parquet | A file containing a column annotated with a LogicalType whose identifier has been set to an abitrary high value to check the behaviour of an old reader reading a file written by a new writer containing an unsupported type (see [related issue](https://github.com/apache/arrow/issues/41764)). |
 | int96_from_spark.parquet | Single column of (deprecated) int96 values that originated as Apache Spark microsecond-resolution timestamps. Some values are outside the range typically representable by 64-bit nanosecond-resolution timestamps. See [int96_from_spark.md](int96_from_spark.md) for details. |
+| floatingpoint_data.tar.gz | Various floating point columns from spotify data set and from ALP paper |
 | binary_truncated_min_max.parquet | A file containing six columns with exact, fully-truncated and partially-truncated max and min statistics and with the expected is_{min/max}_value_exact.  (see [note](Binary-truncated-min-and-max-statistics)).|
 
 TODO: Document what each file is in the table above.
@@ -588,3 +589,20 @@ java -jar parquet-cli/target/parquet-cli-1.16.0-SNAPSHOT-runtime.jar cat /home/r
 {"utf8_full_truncation": "Julia Roberts", "binary_full_truncation": "Julia Roberts", "utf8_partial_truncation": "Julia Roberts", "binary_partial_truncation": "Julia Roberts", "utf8_no_truncation": "Julia Roberts", "binary_no_truncation": "Julia Roberts"}
 {"utf8_full_truncation": "Kevin Bacon", "binary_full_truncation": "Kevin Bacon", "utf8_partial_truncation": "🚀Kevin Bacon", "binary_partial_truncation": "ÿÿ\u0001\u0002", "utf8_no_truncation": "Ke", "binary_no_truncation": "Ke"}
 ```
+
+## Floating point encoding dataset
+Spotify1
+  valence, acousticness, danceability, energy, instrumentalness, liveness, loudness, tempo, speechiness
+
+Spotify2
+  valence, acousticness, danceability, energy, instrumentalness, liveness, loudness, tempo, speechiness
+
+POI dataset
+  latitude_radian, longitude_radian
+
+Common Government dataset
+  amount1, amount2, amount3
+
+Arade dataset
+  value1, value2, value3, value4
+
