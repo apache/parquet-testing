@@ -236,8 +236,9 @@
 }, {
   "case_number" : 41,
   "test" : "testArrayMissingValueColumn",
-  "parquet_file" : "case-041.parquet",
-  "variant_file" : "case-041_row-0.variant.bin",
+  "notes" : "This parquet file is not valid according to the spec (the variant group omits the required 'value' column) and implementations can choose to error, or read the shredded value",
+  "parquet_file" : "case-041-INVALID.parquet",
+  "variant_file" : "case-041-INVALID_row-0.variant.bin",
   "variant" : "Variant(metadata=VariantMetadata(dict={}), value=VariantArray([Variant(type=STRING, value=comedy), Variant(type=STRING, value=drama)]))"
 }, {
   "case_number" : 42,
@@ -775,14 +776,16 @@
 }, {
   "case_number" : 131,
   "test" : "testMissingValueColumn",
-  "parquet_file" : "case-131.parquet",
-  "variant_file" : "case-131_row-0.variant.bin",
+  "notes" : "This parquet file is not valid according to the spec (the variant group omits the required 'value' column) and implementations can choose to error, or read the shredded value",
+  "parquet_file" : "case-131-INVALID.parquet",
+  "variant_file" : "case-131-INVALID_row-0.variant.bin",
   "variant" : "Variant(metadata=VariantMetadata(dict={}), value=Variant(type=INT32, value=34))"
 }, {
   "case_number" : 132,
   "test" : "testShreddedObjectMissingFieldValueColumn",
-  "parquet_file" : "case-132.parquet",
-  "variant_file" : "case-132_row-0.variant.bin",
+  "notes" : "This parquet file is not valid according to the spec (the shredded object field groups omit the required 'value' column) and implementations can choose to error, or read the shredded value",
+  "parquet_file" : "case-132-INVALID.parquet",
+  "variant_file" : "case-132-INVALID_row-0.variant.bin",
   "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={b: Variant(type=STRING, value=iceberg)}))"
 }, {
   "case_number" : 133,
@@ -816,7 +819,8 @@
 }, {
   "case_number" : 138,
   "test" : "testShreddedObjectMissingValueColumn",
-  "parquet_file" : "case-138.parquet",
-  "variant_file" : "case-138_row-0.variant.bin",
+  "notes" : "This parquet file is not valid according to the spec (the variant group omits the required 'value' column) and implementations can choose to error, or read the shredded value",
+  "parquet_file" : "case-138-INVALID.parquet",
+  "variant_file" : "case-138-INVALID_row-0.variant.bin",
   "variant" : "Variant(metadata=VariantMetadata(dict={0 => a, 1 => b, 2 => c, 3 => d, 4 => e}), value=VariantObject(fields={a: Variant(type=INT16, value=1234), b: Variant(type=STRING, value=iceberg)}))"
 } ]
