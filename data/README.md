@@ -63,6 +63,7 @@
 | int96_from_spark.parquet | Single column of (deprecated) int96 values that originated as Apache Spark microsecond-resolution timestamps. Some values are outside the range typically representable by 64-bit nanosecond-resolution timestamps. See [int96_from_spark.md](int96_from_spark.md) for details. |
 | int96_timestamp_order.parquet | Single `required int96` column written with the `INT96_TIMESTAMP_ORDER` column order ([parquet-format #584](https://github.com/apache/parquet-format/pull/584)). Values are chosen so a byte-wise comparison disagrees with the chronological order, so the min/max statistics (and column index) are only correct for a reader that honors the new order. See [int96_timestamp_order.md](int96_timestamp_order.md) for details. |
 | binary_truncated_min_max.parquet | A file containing six columns with exact, fully-truncated and partially-truncated max and min statistics and with the expected is_{min/max}_value_exact.  (see [note](Binary-truncated-min-and-max-statistics)).|
+| no_path_in_schema.zstd.parquet | A file encoded without the `path_in_schema` field on the `ColumnMetaData`  (see parquet-format [#563](https://github.com/apache/parquet-format/issues/563)).|
 
 TODO: Document what each file is in the table above.
 
