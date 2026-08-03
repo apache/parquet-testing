@@ -61,7 +61,15 @@
 | datapage_v2_empty_datapage.snappy.parquet | A compressed FLOAT column with DataPageV2, a single row, value is null, the file uses Snappy compression, but there is no data for uncompression (see [related issue](https://github.com/apache/arrow-rs/issues/7388)). The zero bytes must not be attempted to be uncompressed, as this is an invalid Snappy stream. |
 | unknown-logical-type.parquet | A file containing a column annotated with a LogicalType whose identifier has been set to an abitrary high value to check the behaviour of an old reader reading a file written by a new writer containing an unsupported type (see [related issue](https://github.com/apache/arrow/issues/41764)). |
 | int96_from_spark.parquet | Single column of (deprecated) int96 values that originated as Apache Spark microsecond-resolution timestamps. Some values are outside the range typically representable by 64-bit nanosecond-resolution timestamps. See [int96_from_spark.md](int96_from_spark.md) for details. |
-| floatingpoint_data.tar.gz | Various floating point columns from spotify data set and from ALP paper |
+| alp_arade.parquet | Four DOUBLE columns from the Arade dataset of the [ALP paper](https://ir.cwi.nl/pub/33334/33334.pdf), encoded with the proposed ALP encoding ([parquet-format#533](https://github.com/apache/parquet-format/issues/533)), written by parquet-cpp. Expected contents in [alp_arade_expect.csv](alp_arade_expect.csv). See [note](#floating-point-encoding-dataset) below |
+| alp_float_arade.parquet | Same as `alp_arade.parquet` but with FLOAT columns. Expected contents in [alp_float_arade_expect.csv](alp_float_arade_expect.csv) |
+| alp_spotify1.parquet | Nine DOUBLE columns of Spotify track audio features, encoded with the proposed ALP encoding, written by parquet-cpp. Expected contents in [alp_spotify1_expect.csv](alp_spotify1_expect.csv). See [note](#floating-point-encoding-dataset) below |
+| alp_float_spotify1.parquet | Same as `alp_spotify1.parquet` but with FLOAT columns. Expected contents in [alp_float_spotify1_expect.csv](alp_float_spotify1_expect.csv) |
+| alp_java_arade.parquet | Same data as `alp_arade.parquet`, written by parquet-java |
+| alp_java_float_arade.parquet | Same data as `alp_float_arade.parquet`, written by parquet-java |
+| alp_java_spotify1.parquet | Same data as `alp_spotify1.parquet`, written by parquet-java |
+| alp_java_float_spotify1.parquet | Same data as `alp_float_spotify1.parquet`, written by parquet-java |
+| floatingpoint_data.tar.gz | 20 CSV files of floating point data from the datasets used in the [ALP paper](https://ir.cwi.nl/pub/33334/33334.pdf) and from Spotify track audio features; the source data for the `alp_*.parquet` files. See [note](#floating-point-encoding-dataset) below |
 | int96_timestamp_order.parquet | Single `required int96` column written with the `INT96_TIMESTAMP_ORDER` column order ([parquet-format #584](https://github.com/apache/parquet-format/pull/584)). Values are chosen so a byte-wise comparison disagrees with the chronological order, so the min/max statistics (and column index) are only correct for a reader that honors the new order. See [int96_timestamp_order.md](int96_timestamp_order.md) for details. |
 | binary_truncated_min_max.parquet | A file containing six columns with exact, fully-truncated and partially-truncated max and min statistics and with the expected is_{min/max}_value_exact.  (see [note](Binary-truncated-min-and-max-statistics)).|
 
@@ -592,18 +600,89 @@ java -jar parquet-cli/target/parquet-cli-1.16.0-SNAPSHOT-runtime.jar cat /home/r
 ```
 
 ## Floating point encoding dataset
-Spotify1
-  valence, acousticness, danceability, energy, instrumentalness, liveness, loudness, tempo, speechiness
 
-Spotify2
-  valence, acousticness, danceability, energy, instrumentalness, liveness, loudness, tempo, speechiness
+These files are intended for testing floating point encodings, in particular
+the proposed ALP encoding
+([parquet-format#533](https://github.com/apache/parquet-format/issues/533))
+described in the paper
+[ALP: Adaptive Lossless floating-Point Compression](https://ir.cwi.nl/pub/33334/33334.pdf)
+(Afroozeh, Kuffó and Boncz, SIGMOD 2024).
 
-POI dataset
-  latitude_radian, longitude_radian
+### Source data
 
-Common Government dataset
-  amount1, amount2, amount3
+`floatingpoint_data.tar.gz` contains 20 CSV files, each with 15,000 rows of
+floating point data sampled from the datasets used to evaluate ALP in the
+paper, plus audio features of Spotify tracks:
 
-Arade dataset
-  value1, value2, value3, value4
+| File                                                  | Columns                                                                                               |
+|-------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| floatingpoint_arade.csv                               | value1, value2, value3, value4 (`\|` separated, no header row)                                        |
+| floatingpoint_birdmigration.csv                       | _value                                                                                                |
+| floatingpoint_citytemperature.csv                     | AvgTemperature                                                                                        |
+| floatingpoint_commongovernment.csv                    | amount1, amount2, amount3 (`\|` separated, no header row)                                             |
+| floatingpoint_msg_{bt, lu, sp, sppm, sweep3d}.csv     | value                                                                                                 |
+| floatingpoint_num_{brain, comet, control, plasma}.csv | value                                                                                                 |
+| floatingpoint_obs_{error, info, spitzer, temp}.csv    | value                                                                                                 |
+| floatingpoint_poi.csv                                 | latitude_radian, longitude_radian                                                                     |
+| floatingpoint_spotify1.csv                            | danceability, energy, loudness, speechiness, acousticness, instrumentalness, liveness, valence, tempo |
+| floatingpoint_spotify2.csv                            | danceability, energy, loudness, speechiness, acousticness, instrumentalness, liveness, valence, tempo |
+
+### ALP encoded files
+
+The `alp_*.parquet` files contain the Arade and Spotify1 datasets encoded with
+the  ALP encoding, in both DOUBLE and FLOAT (`alp_float_*`) versions.
+Each file has 15,000 rows in a single uncompressed row group, with all columns
+ALP encoded:
+
+| File                            | Physical type | Writer                             |
+|---------------------------------|---------------|------------------------------------|
+| alp_arade.parquet               | DOUBLE        |  parquet-cpp-arrow 23.0.0-SNAPSHOT |
+| alp_float_arade.parquet         | FLOAT         | parquet-cpp-arrow 23.0.0-SNAPSHOT  |
+| alp_spotify1.parquet            | DOUBLE        | parquet-cpp-arrow 23.0.0-SNAPSHOT  |
+| alp_float_spotify1.parquet      | FLOAT         | parquet-cpp-arrow 23.0.0-SNAPSHOT  |
+| alp_java_arade.parquet          | DOUBLE        | parquet-java 1.18.0-SNAPSHOT       |
+| alp_java_float_arade.parquet    | FLOAT         | parquet-java 1.18.0-SNAPSHOT       |
+| alp_java_spotify1.parquet       | DOUBLE        | parquet-java 1.18.0-SNAPSHOT       |
+| alp_java_float_spotify1.parquet | FLOAT         | parquet-java 1.18.0-SNAPSHOT       |
+
+The schema of the Arade files is:
+
+```
+message schema {
+  optional double value1;
+  optional double value2;
+  optional double value3;
+  optional double value4;
+}
+```
+
+and the schema of the Spotify1 files is:
+
+```
+message schema {
+  optional double danceability;
+  optional double energy;
+  optional double loudness;
+  optional double speechiness;
+  optional double acousticness;
+  optional double instrumentalness;
+  optional double liveness;
+  optional double valence;
+  optional double tempo;
+}
+```
+
+(with `float` instead of `double` for the `alp_float_*` files).
+
+The expected contents of each dataset / physical type combination are in the
+corresponding `*_expect.csv` file:
+
+* `alp_arade_expect.csv`: `alp_arade.parquet` and `alp_java_arade.parquet`
+* `alp_float_arade_expect.csv`: `alp_float_arade.parquet` and `alp_java_float_arade.parquet`
+* `alp_spotify1_expect.csv`: `alp_spotify1.parquet` and `alp_java_spotify1.parquet`
+* `alp_float_spotify1_expect.csv`: `alp_float_spotify1.parquet` and `alp_java_float_spotify1.parquet`
+
+The FLOAT files have their own `alp_float_*_expect.csv` files because the
+values are rounded to FLOAT precision. As ALP is lossless, decoded values must
+be bitwise identical to the expected values.
 
