@@ -48,6 +48,7 @@
 | large_string_map.brotli.parquet       | MAP(STRING, INT32) with a string column chunk of more than 2GB. See [note](#large-string-map) below |
 | float16_nonzeros_and_nans.parquet | Float16 (logical type) column with NaNs and nonzero finite min/max values |
 | float16_zeros_and_nans.parquet    | Float16 (logical type) column with NaNs and zeros as min/max values. . See [note](#float16-files) below |
+| floating_orders_nan_count.parquet | FLOAT/DOUBLE/FLOAT16 columns in IEEE754 and TypeDefined orders across five row groups (no-NaN, mixed-NaN, all-NaN, zero-min, zero-max) to validate nan_count, signed NaNs, and IEEE-754 zero ordering in statistics and column index |
 | concatenated_gzip_members.parquet     | 513 UINT64 numbers compressed using 2 concatenated gzip members in a single data page |
 | byte_stream_split.zstd.parquet | Standard normals with `BYTE_STREAM_SPLIT` encoding. See [note](#byte-stream-split) below |
 | incorrect_map_schema.parquet | Contains a Map schema without explicitly required keys, produced by Presto. See [note](#incorrect-map-schema) |
@@ -61,6 +62,7 @@
 | unknown-logical-type.parquet | A file containing a column annotated with a LogicalType whose identifier has been set to an abitrary high value to check the behaviour of an old reader reading a file written by a new writer containing an unsupported type (see [related issue](https://github.com/apache/arrow/issues/41764)). |
 | int96_from_spark.parquet | Single column of (deprecated) int96 values that originated as Apache Spark microsecond-resolution timestamps. Some values are outside the range typically representable by 64-bit nanosecond-resolution timestamps. See [int96_from_spark.md](int96_from_spark.md) for details. |
 | floatingpoint_data.tar.gz | Various floating point columns from spotify data set and from ALP paper |
+| int96_timestamp_order.parquet | Single `required int96` column written with the `INT96_TIMESTAMP_ORDER` column order ([parquet-format #584](https://github.com/apache/parquet-format/pull/584)). Values are chosen so a byte-wise comparison disagrees with the chronological order, so the min/max statistics (and column index) are only correct for a reader that honors the new order. See [int96_timestamp_order.md](int96_timestamp_order.md) for details. |
 | binary_truncated_min_max.parquet | A file containing six columns with exact, fully-truncated and partially-truncated max and min statistics and with the expected is_{min/max}_value_exact.  (see [note](Binary-truncated-min-and-max-statistics)).|
 
 TODO: Document what each file is in the table above.
@@ -103,6 +105,73 @@ external key material enabled, so the key material is found in the
 `_KEY_MATERIAL_FOR_external_key_material_java.parquet.encrypted.json` file.
 This data was written using the `org.apache.parquet.crypto.keytools.mocks.InMemoryKMS` KMS client,
 which is compatible with the `TestOnlyInServerWrapKms` KMS client used in C++ tests.
+
+The `encrypt_columns_and_footer_bloom_filter.parquet.encrypted` file enables Bloom filters
+on `double_field` and `float_field`.
+
+The files in `data/aes256` were encrypted with the following keys and key ids (when using key\_retriever) using parquet-mr:
+* Encrypted/Signed Footer:
+  * key:   {0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1}
+  * key_id: "kf"
+* Encrypted column named double_field (including column and offset index):
+  * key:  {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2}
+  * key_id: "kc1"
+* Encrypted column named float_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,3}
+  * key_id: "kc2"
+* Encrypted column named boolean_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,4}
+  * key_id: "kc3"
+* Encrypted column named int32_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,5}
+  * key_id: "kc4"
+* Encrypted column named ba_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,6}
+  * key_id: "kc5"
+* Encrypted column named flba_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,7}
+  * key_id: "kc6"
+* Encrypted column named int64_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,8}
+  * key_id: "kc7"
+* Encrypted column named int96_field (including column and offset index):
+  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,9}
+  * key_id: "kc8"
+
+The corresponding schema in Java is:
+
+```java
+// byte order is LITTLE_ENDIAN and PageWrite checksum is disabled.
+public static final String BOOLEAN_FIELD_NAME = "boolean_field";
+public static final String INT32_FIELD_NAME = "int32_field";
+public static final String INT64_FIELD_NAME = "int64_field";
+public static final String INT64_ELEMENT_COLUMN_PATH = "int64_field.list.element";
+public static final String INT96_FIELD_NAME = "int96_field";
+public static final String FLOAT_FIELD_NAME = "float_field";
+public static final String DOUBLE_FIELD_NAME = "double_field";
+public static final String BINARY_FIELD_NAME = "ba_field";
+public static final String FIXED_LENGTH_BINARY_FIELD_NAME = "flba_field";
+
+private static final MessageType SCHEMA = new MessageType(
+    "schema",
+    new PrimitiveType(REQUIRED, BOOLEAN, BOOLEAN_FIELD_NAME),
+    Types.required(INT32).as(LogicalTypeAnnotation.timeType(true, MILLIS)).named(INT32_FIELD_NAME),
+    Types.optionalGroup().repeatedGroup().required(INT64).named("element").named("list").as(LogicalTypeAnnotation.listType()).named(INT64_FIELD_NAME),
+    Types.required(INT96).named(INT96_FIELD_NAME),
+    new PrimitiveType(REQUIRED, FLOAT, FLOAT_FIELD_NAME),
+    new PrimitiveType(REQUIRED, DOUBLE, DOUBLE_FIELD_NAME),
+    new PrimitiveType(OPTIONAL, BINARY, BINARY_FIELD_NAME),
+    Types.required(FIXED_LEN_BYTE_ARRAY).length(FIXED_LENGTH).named(FIXED_LENGTH_BINARY_FIELD_NAME));
+
+// ColumnEncryptionProperties for the list field
+Map<ColumnPath, ColumnEncryptionProperties> columnPropertiesMap = new HashMap<>();
+ColumnEncryptionProperties columnPropertiesInt64List = ColumnEncryptionProperties.builder(
+        ColumnPath.fromDotString(INT64_ELEMENT_COLUMN_PATH))
+    .withKey(COLUMN_ENCRYPTION_KEYS[6])
+    .withKeyID(COLUMN_ENCRYPTION_KEY_IDS[6])
+    .build();
+columnPropertiesMap.put(columnPropertiesInt64List.getPath(), columnPropertiesInt64List);
+```
 
 ## Checksum Files
 
