@@ -593,16 +593,17 @@ java -jar parquet-cli/target/parquet-cli-1.16.0-SNAPSHOT-runtime.jar cat /home/r
 {"utf8_full_truncation": "Kevin Bacon", "binary_full_truncation": "Kevin Bacon", "utf8_partial_truncation": "🚀Kevin Bacon", "binary_partial_truncation": "ÿÿ\u0001\u0002", "utf8_no_truncation": "Ke", "binary_no_truncation": "Ke"}
 ```
 
-<<<<<<< HEAD
 ## ALP encoding
 
 `alp_extended.zstd.parquet` contains FLOAT and DOUBLE columns encoded with
 [Adaptive Lossless floating-Point (ALP)](https://github.com/apache/parquet-format/blob/master/Encodings.md#adaptive-lossless-floating-point-alp--10)
-(`ALP = 10` in the parquet.thrift `Encoding` enum).
+(`ALP = 10`).
 It was created with the code in this [PR](https://github.com/apache/arrow/pull/49154).
 
-The same values appear in `PLAIN`-encoded reference columns so decoders can
-bit-compare the `ALP` columns against known results:
+All columns contain the same 9032 values.  The same values appear all columns so
+decoders can bit-compare the `ALP` columns against known results stored with
+`PLAIN` encoding.
+
 
 | Column                              | Encoding                  | Rationale / coverage                                                              |
 |-------------------------------------|---------------------------|-----------------------------------------------------------------------------------|
@@ -611,42 +612,50 @@ bit-compare the `ALP` columns against known results:
 | `float_alp_4096`, `double_alp_4096` | `ALP`, 4096-value vectors | Readers must honor `log_vector_size` from the page header rather than assume 1024 |
 | `float_alp_32`, `double_alp_32`     | `ALP`, 32-value vectors   | Many vectors per page, stresses the per-vector metadata loop                      |
 
-All columns contain the same 9000 values. The `ALP` column chunks are
-uncompressed; the `PLAIN` reference columns are zstd-compressed to keep the file small.
 
-### Data distribution (9000 rows)
+### Data distribution (9032 rows)
 
-The "base distribution" means random values in [-10.00, 10.00] with exactly 2
+The "base distribution" means random values in `[-10.00, 10.00]` with exactly 2
 decimal digits (e.g. `9.43`), which are losslessly encodable by ALP (no exceptions).
 
-The contents of the 9000 rows are as follows:
+The contents of the 9032 rows are as follows:
 
-| Rows      | Contents                                                                                                                                     | Rationale / coverage                                                                                                                                                                                                 |
-|-----------|----------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 0–1023    | base                                                                                                                                         | Happy path: full vector, small frame-of-reference bit width, no exceptions                                                                                                                                           |
-| 1024–2047 | base, plus: NaN at 1024 and 2047, NaN at 1500, +Inf at 2000, −Inf at 2001, −0.0 at 2002, subnormal (`5e-324` double / `1e-45` float) at 2003 | NaN / Inf and sign/precision edge values via the exception mechanism; exceptions at exact vector boundaries; statistics conventions (NaN excluded from min/max, ±Inf included, `nan_count`, −0.0/+0.0 normalization) |
-| 2048–3071 | base, plus: `3.141592653589793` at 2500                                                                                                      | Exactly one exception: the full-mantissa value cannot round-trip as a decimal, and nothing else in the vector is exceptional                                                                                         |
-| 3072–4095 | base, plus: `44974934523.343` at 3100 and `-1243432432.3432` at 3711                                                                         | Large-magnitude values                                                                                                                                                                                               |
-| 4096–5119 | every 2nd value full-mantissa random, rest base                                                                                              | Many (but not all) exceptions                                                                                                                                                                                        |
-| 5120–6143 | all values full-mantissa random                                                                                                              | All exceptions                                                                                                                                                                                                       |
-| 6144–7167 | base but with 4 decimal digits (e.g. `3.1416`)                                                                                               | Different exponent/factor than the other vectors                                                                                                                                                                     |
-| 7168–8191 | constant (all `7.77`)                                                                                                                        | `bit_width = 0` vectors                                                                                                                                                                                              |
-| 8192–8999 | base, with nulls at every 100th row (8 nulls)                                                                                                | Trailing partial vector + null handling                                                                                                                                                                              |
+| Rows      | Contents                                                                                                                                                                       | Rationale / coverage                                                                                                                                                                                                                           |
+|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 0–1023    | base                                                                                                                                                                           | Happy path: full vector, small frame-of-reference bit width, no exceptions                                                                                                                                                                     |
+| 1024–2047 | base, plus: NaN at 1024, 1500 and 2047 (three distinct bit patterns, see below), +Inf at 2000, −Inf at 2001, −0.0 at 2002, subnormal (`5e-324` double / `1e-45` float) at 2003 | NaN / Inf and sign/precision edge values via the exception mechanism; exceptions at exact vector boundaries; NaN payload preservation; statistics conventions (NaN excluded from min/max, ±Inf included, `nan_count`, −0.0/+0.0 normalization) |
+| 2048–3071 | base, plus: `3.141592653589793` at 2500                                                                                                                                        | Exactly one exception: the full-mantissa value cannot round-trip as a decimal, and nothing else in the vector is exceptional                                                                                                                   |
+| 3072–4095 | base, plus: `44974934523.343` at 3100 and `-1243432432.3432` at 3711                                                                                                           | Large-magnitude values                                                                                                                                                                                                                         |
+| 4096–5119 | every 2nd value full-mantissa random, rest base                                                                                                                                | Many (but not all) exceptions                                                                                                                                                                                                                  |
+| 5120–6143 | all values full-mantissa random                                                                                                                                                | All exceptions                                                                                                                                                                                                                                 |
+| 6144–7167 | base but with 4 decimal digits (e.g. `3.1416`)                                                                                                                                 | Different exponent/factor than the other vectors                                                                                                                                                                                               |
+| 7168–8191 | constant (all `7.77`)                                                                                                                                                          | `bit_width = 0` vectors                                                                                                                                                                                                                        |
+| 8192–8999 | base, with nulls at every 100th row (8 nulls)                                                                                                                                  | Partial vector + null handling                                                                                                                                                                                                                 |
+| 9000–9031 | random integer-valued values in `[−8e18, 8e18]`, with exactly -8e18 at 9000 and 8e18 at 9001                                                                                   | Max FOR length (64-bit) `bit_width`; (FLOAT columns as exceptions)                                                                                                                                                                             |
 
-The file has four row groups:
+The three NaNs use distinct bit patterns so readers are checked for preserving
+non-canonical NaN payloads (ALP stores exception values bit-exactly):
 
-| Row group | Rows      | Contents                                                           |
-|-----------|-----------|--------------------------------------------------------------------|
-| 0         | 0–6143    | Base + all exception cases (6144 rows, 1546 exceptions per column) |
-| 1         | 6144–7167 | 4-decimal-digit values (different exponent/factor)                 |
-| 2         | 7168–8191 | Constant `7.77` (`bit_width = 0`)                                  |
-| 3         | 8192–8999 | Partial trailing vector with 8 nulls                               |
+| Row  | DOUBLE bits          | FLOAT bits   | Description                     |
+|------|----------------------|--------------|---------------------------------|
+| 1024 | `0x7FF8000000000000` | `0x7FC00000` | Canonical quiet NaN             |
+| 1500 | `0x7FF800DEADBEEF00` | `0x7FC0DEAD` | Quiet NaN with payload          |
+| 2047 | `0xFFF8000000000001` | `0xFFC00001` | Negative quiet NaN with payload |
+
+The file has five row groups:
+
+| Row group | Rows      | Contents                                                            |
+|-----------|-----------|---------------------------------------------------------------------|
+| 0         | 0–6143    | Base + all exception cases (6144 rows, 1546 exceptions per column)  |
+| 1         | 6144–7167 | 4-decimal-digit values (different exponent/factor)                  |
+| 2         | 7168–8191 | Constant `7.77` (`bit_width = 0`)                                   |
+| 3         | 8192–8999 | Partial trailing vector with 8 nulls                                |
+| 4         | 9000–9031 | Large-magnitude values                                              |
 
 To check conformance of an `ALP` decoder, read each `ALP`-encoded column and
 compare the decoded values against the values from the corresponding
-`PLAIN`-encoded column. The values should be bit-exact, including NaN and
-`-0.0`.
-=======
+`PLAIN`-encoded column. The values should be match exactly (bitwise).
+
 ## JSON and BSON logical types
 
 `json.parquet` and `bson.parquet` each contain a single optional `BYTE_ARRAY`
@@ -751,4 +760,3 @@ Column annotations read back with pyarrow (both files: `null_count` = 1):
 json.parquet | physical: BYTE_ARRAY | logical: JSON | converted: JSON
 bson.parquet | physical: BYTE_ARRAY | logical: BSON | converted: BSON
 ```
->>>>>>> origin/master
