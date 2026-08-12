@@ -35,3 +35,31 @@ These are files used for reproducing various bugs that have been reported.
   where repetition levels start with a 1 instead of 0.
 * ARROW-GH-47662.parquet: test case identified in https://github.com/apache/arrow/issues/47662
   where a required column contains null values (an incorrect version of data/fixed_length_byte_array.parquet).
+
+
+## Directory `variants`
+
+This subdirectory contains files with malformed variant structures.
+
+Robust implementations of variant decoders SHOULD reject these.
+
+| File                                                          | Malformed Structure                                                        |
+|---------------------------------------------------------------|----------------------------------------------------------------------------|
+| `variant/int_overflow_in_bounds_check.parquet`                | Triggers an overflow if 32 bit multiplication is used to calculate ranges. |
+| `variant/out_of_range_dictionary_size.parquet`                | The dictionary is declared as larger than the data                         |
+| `variant/malformed_child_inside_well_formed_parent.parquet`   | Parent is well formed; child is malformed                                  |
+| `variant/out_of_range_child_offset.parquet`                   | The offset of an child element is out of range                             |
+| `variant/out_of_range_element_count.parquet`                  | The number of declared array elements is larger than the data              |
+| `variant/bad_data/variants/over_deep_nested_children.parquet` | The hierarchy is excessively deep                                          |
+
+The first of these is the most critical, as this can trigger a memory allocation of many GiB, which may affect the operations of other worker threads in a shared process; an oversized dictionary may also trigger excessive memory allocation.
+
+The out of range child and element files contain metadata referring to content past the end of the actual data field.
+On languages with strict range check, this will fail on read; extra verification simply changes when the failure is detected.
+For languages where range checks are not automatically, there is a risk of variant data referencing other data on the stack/in the heap.
+As this data is read only, there's no _direct_ threat to the integrity of the process, but it is still highly dangerous.
+
+One notable file is `bad_data/variants/over_deep_nested_children.parquet`, which verifies that nested variant children over 500 levels deep is rejected. This number is subjective; it was chosen to be consistent with the JSON parser `org.apache.parquet.variant.VariantJsonParser`.
+
+Currently excluded from these tests is any with an explicit limit on the size of a variant.
+Apache Spark places a limit on 128 MiB on each of the metadata and value fields here.
