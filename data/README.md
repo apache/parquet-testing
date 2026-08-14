@@ -600,9 +600,8 @@ java -jar parquet-cli/target/parquet-cli-1.16.0-SNAPSHOT-runtime.jar cat /home/r
 (`ALP = 10`).
 It was created with the code in this [PR](https://github.com/apache/arrow/pull/49154).
 
-All columns contain the same 9032 values.  The same values appear in all columns so
-decoders can bit-compare the `ALP` columns against known results stored with
-`PLAIN` encoding.
+All columns contain the same 9032 values, so decoders can bit-compare the
+`ALP` columns against known results stored with `PLAIN` encoding.
 
 
 | Column                              | Encoding                  | Rationale / coverage                                                              |
