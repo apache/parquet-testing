@@ -65,6 +65,7 @@
 | binary_truncated_min_max.parquet | A file containing six columns with exact, fully-truncated and partially-truncated max and min statistics and with the expected is_{min/max}_value_exact.  (see [note](Binary-truncated-min-and-max-statistics)).|
 | json.parquet | A single optional BYTE_ARRAY column annotated with the JSON logical type (also carries the legacy converted type JSON). Four rows: `{"a":1}`, `{"a":1,"b":null}` (null field value inside a non-null document), `[1,null,3]` (null element inside an array), and a NULL row. See [note](#json-and-bson-logical-types) below. |
 | bson.parquet | A single optional BYTE_ARRAY column annotated with the BSON logical type (also carries the legacy converted type BSON). Three rows: BSON `{"a":1}`, `{"a":1,"b":null}` (null field value inside a non-null document), and a NULL row. See [note](#json-and-bson-logical-types) below. |
+| flba12_timestamp.parquet | Three `FIXED_LEN_BYTE_ARRAY(12)` columns annotated with `TIMESTAMP`. See [flba12_timestamp.md](flba12_timestamp.md) for details. |
 
 TODO: Document what each file is in the table above.
 
