@@ -63,6 +63,7 @@
 | int96_from_spark.parquet | Single column of (deprecated) int96 values that originated as Apache Spark microsecond-resolution timestamps. Some values are outside the range typically representable by 64-bit nanosecond-resolution timestamps. See [int96_from_spark.md](int96_from_spark.md) for details. |
 | int96_timestamp_order.parquet | Single `required int96` column written with the `INT96_TIMESTAMP_ORDER` column order ([parquet-format #584](https://github.com/apache/parquet-format/pull/584)). Values are chosen so a byte-wise comparison disagrees with the chronological order, so the min/max statistics (and column index) are only correct for a reader that honors the new order. See [int96_timestamp_order.md](int96_timestamp_order.md) for details. |
 | binary_truncated_min_max.parquet | A file containing six columns with exact, fully-truncated and partially-truncated max and min statistics and with the expected is_{min/max}_value_exact.  (see [note](Binary-truncated-min-and-max-statistics)).|
+| alp_extended.zstd.parquet | FLOAT and DOUBLE columns encoded using Adaptive Lossless floating-Point (ALP). See [note](#alp-encoding) below |
 | json.parquet | A single optional BYTE_ARRAY column annotated with the JSON logical type (also carries the legacy converted type JSON). Four rows: `{"a":1}`, `{"a":1,"b":null}` (null field value inside a non-null document), `[1,null,3]` (null element inside an array), and a NULL row. See [note](#json-and-bson-logical-types) below. |
 | bson.parquet | A single optional BYTE_ARRAY column annotated with the BSON logical type (also carries the legacy converted type BSON). Three rows: BSON `{"a":1}`, `{"a":1,"b":null}` (null field value inside a non-null document), and a NULL row. See [note](#json-and-bson-logical-types) below. |
 
@@ -591,6 +592,68 @@ java -jar parquet-cli/target/parquet-cli-1.16.0-SNAPSHOT-runtime.jar cat /home/r
 {"utf8_full_truncation": "Julia Roberts", "binary_full_truncation": "Julia Roberts", "utf8_partial_truncation": "Julia Roberts", "binary_partial_truncation": "Julia Roberts", "utf8_no_truncation": "Julia Roberts", "binary_no_truncation": "Julia Roberts"}
 {"utf8_full_truncation": "Kevin Bacon", "binary_full_truncation": "Kevin Bacon", "utf8_partial_truncation": "🚀Kevin Bacon", "binary_partial_truncation": "ÿÿ\u0001\u0002", "utf8_no_truncation": "Ke", "binary_no_truncation": "Ke"}
 ```
+
+## ALP encoding
+
+`alp_extended.zstd.parquet` contains FLOAT and DOUBLE columns encoded with
+[Adaptive Lossless floating-Point (ALP)](https://github.com/apache/parquet-format/blob/master/Encodings.md#adaptive-lossless-floating-point-alp--10)
+(`ALP = 10`).
+It was created with the code in this [PR](https://github.com/apache/arrow/pull/49154).
+
+All columns contain the same 9032 values, so decoders can bit-compare the
+`ALP` columns against known results stored with `PLAIN` encoding.
+
+
+| Column                              | Encoding                  | Rationale / coverage                                                              |
+|-------------------------------------|---------------------------|-----------------------------------------------------------------------------------|
+| `float_plain`, `double_plain`       | `PLAIN` + zstd            | In-file reference: readers can bit-compare the ALP columns against these          |
+| `float_alp_1024`, `double_alp_1024` | `ALP`, 1024-value vectors | The default vector size of 1024 values                                            |
+| `float_alp_4096`, `double_alp_4096` | `ALP`, 4096-value vectors | Readers must honor `log_vector_size` from the page header rather than assume 1024 |
+| `float_alp_32`, `double_alp_32`     | `ALP`, 32-value vectors   | Many vectors per page, stresses the per-vector metadata loop                      |
+
+
+### Data distribution (9032 rows)
+
+The "base distribution" means random values in `[-10.00, 10.00]` with exactly 2
+decimal digits (e.g. `9.43`), which are losslessly encodable by ALP (no exceptions).
+
+The contents of the 9032 rows are as follows:
+
+| Rows      | Contents                                                                                                                                                                       | Rationale / coverage                                                                                                                  |
+|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| 0–1023    | base                                                                                                                                                                           | Happy path: full vector, small frame-of-reference bit width, no exceptions                                                            |
+| 1024–2047 | base, plus: NaN at 1024, 1500 and 2047 (three distinct bit patterns, see below), +Inf at 2000, −Inf at 2001, −0.0 at 2002, subnormal (`5e-324` double / `1e-45` float) at 2003 | NaN / Inf and sign/precision edge values via the exception mechanism; exceptions at exact vector boundaries; NaN payload preservation |
+| 2048–3071 | base, plus: `3.141592653589793` at 2500                                                                                                                                        | Exactly one exception: the full-mantissa value cannot round-trip as a decimal          |
+| 3072–4095 | base, plus: `44974934523.343` at 3100 and `-1243432432.3432` at 3711                                                                                                           | Large-magnitude values                                                                                                                |
+| 4096–5119 | every 2nd value full-mantissa random, rest base                                                                                                                                | Many (but not all) exceptions                                                                                                         |
+| 5120–6143 | all values full-mantissa random                                                                                                                                                | All exceptions                                                                                                                        |
+| 6144–7167 | base but with 4 decimal digits (e.g. `3.1416`)                                                                                                                                 | Different exponent/factor than the other vectors                                                                                      |
+| 7168–8191 | constant (all `7.77`)                                                                                                                                                          | `bit_width = 0` vectors                                                                                                               |
+| 8192–8999 | base, with nulls at every row ordinal divisible by 100 (row 8200, 8300, ... 8900)                                                                                              | Partial vector + null handling                                                                                                        |
+| 9000–9031 | random integer-valued values in `[−8e18, 8e18]`, with exactly -8e18 at 9000 and 8e18 at 9001                                                                                   | Max FOR length (64-bit) `bit_width`; (FLOAT columns as exceptions)                                                                    |
+
+The three NaNs use distinct bit patterns so readers are checked for preserving
+non-canonical NaN payloads (ALP stores exception values bit-exactly):
+
+| Row  | DOUBLE bits          | FLOAT bits   | Description                     |
+|------|----------------------|--------------|---------------------------------|
+| 1024 | `0x7FF8000000000000` | `0x7FC00000` | Canonical quiet NaN             |
+| 1500 | `0x7FF800DEADBEEF00` | `0x7FC0DEAD` | Quiet NaN with payload          |
+| 2047 | `0xFFF8000000000001` | `0xFFC00001` | Negative quiet NaN with payload |
+
+The file has five row groups:
+
+| Row group | Rows      | Contents                                                            |
+|-----------|-----------|---------------------------------------------------------------------|
+| 0         | 0–6143    | Base + all exception cases (6144 rows, 1546 exceptions per column)  |
+| 1         | 6144–7167 | 4-decimal-digit values (different exponent/factor)                  |
+| 2         | 7168–8191 | Constant `7.77` (`bit_width = 0`)                                   |
+| 3         | 8192–8999 | Partial trailing vector with 8 nulls                                |
+| 4         | 9000–9031 | Large-magnitude values                                              |
+
+To check conformance of an `ALP` decoder, read each `ALP`-encoded column and
+compare the decoded values against the values from the corresponding
+`PLAIN`-encoded column. The values should match exactly (bitwise).
 
 ## JSON and BSON logical types
 
