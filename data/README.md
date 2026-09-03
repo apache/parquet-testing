@@ -67,6 +67,8 @@
 | alp_extended.zstd.parquet | FLOAT and DOUBLE columns encoded using Adaptive Lossless floating-Point (ALP). See [note](#alp-encoding) below |
 | json.parquet | A single optional BYTE_ARRAY column annotated with the JSON logical type (also carries the legacy converted type JSON). Four rows: `{"a":1}`, `{"a":1,"b":null}` (null field value inside a non-null document), `[1,null,3]` (null element inside an array), and a NULL row. See [note](#json-and-bson-logical-types) below. |
 | bson.parquet | A single optional BYTE_ARRAY column annotated with the BSON logical type (also carries the legacy converted type BSON). Three rows: BSON `{"a":1}`, `{"a":1,"b":null}` (null field value inside a non-null document), and a NULL row. See [note](#json-and-bson-logical-types) below. |
+| fsst.parquet | BYTE_ARRAY columns encoded with FSST, in both the `FSST` (8-bit codes) and `FSST_16` (16-bit codes) symbol table variants, alongside conventionally-encoded columns holding the same values. See [note](#fsst-encoding) below |
+| fsst.zstd.parquet | As `fsst.parquet`, but with zstd compression, so the symbol table pages carry `is_compressed = true`. See [note](#fsst-encoding) below |
 
 TODO: Document what each file is in the table above.
 
@@ -760,3 +762,83 @@ Column annotations read back with pyarrow (both files: `null_count` = 1):
 json.parquet | physical: BYTE_ARRAY | logical: JSON | converted: JSON
 bson.parquet | physical: BYTE_ARRAY | logical: BSON | converted: BSON
 ```
+
+## FSST encoding
+
+`fsst.parquet` and `fsst.zstd.parquet` contain BYTE_ARRAY columns encoded with
+[FSST](https://github.com/apache/parquet-format/issues/531) (`FSST = 11`), covering both
+symbol table variants the proposal defines: `FSST` (8-bit codes) and `FSST_16` (16-bit codes).
+They were created with the generator in
+[EngineeredWood](https://github.com/clast-project/engineered-wood) (`ew-test-tool
+create_fsst_test_file`), from a synthetic seeded corpus, so they are reproducible from source
+and carry no third-party licensing.
+
+The two files hold identical data and differ only in compression, because the symbol table
+page carries its own `is_compressed` flag: in `fsst.parquet` that flag is false and the page
+body is plain, while in `fsst.zstd.parquet` it is true and the body must be decompressed with
+the column chunk's codec. A reader that ignores the flag passes one file and fails the other.
+
+### Columns
+
+All six columns hold the **same values** in every row group, so a decoder can bit-compare the
+FSST columns against the conventionally-encoded ones without any expected data alongside the
+file. This is the intended conformance check.
+
+| Column | Encoding | Rationale / coverage |
+|---|---|---|
+| `string_reference`, `binary_reference` | `DELTA_LENGTH_BYTE_ARRAY` | In-file reference: readers bit-compare the FSST columns against these |
+| `string_fsst`, `binary_fsst` | `FSST`, 8-bit symbol table | The 1-byte code path, escape marker 255 |
+| `string_fsst16`, `binary_fsst16` | `FSST`, 16-bit symbol table | The 2-byte code path; only the symbol table page's `type` field distinguishes it |
+
+The `string_*` columns are annotated UTF-8; the `binary_*` columns are unannotated BYTE_ARRAY
+and carry bytes that are not valid UTF-8.
+
+### Row groups
+
+Each row group trains its own symbol table, so the file contains sixteen distinct symbol
+table pages rather than one.
+
+| Row group | Rows | Contents | Rationale / coverage |
+|---|---|---|---|
+| 0 | 400 | High-cardinality URLs | Happy path: 14 data pages per chunk sharing one symbol table (196 symbols for `FSST`, 559 for `FSST_16`) |
+| 1 | 240 | Log lines, with NULLs every 7th row and empty strings every 5th | Zero-length values and definition levels alongside FSST pages |
+| 2 | 200 | Session strings, every 9th carrying a byte the table cannot cover | Escape sequences — the rare bytes are rare on purpose, since a byte present in every value is simply learned as a symbol and never escaped |
+| 3 | 16 | Path-like values of ~400 bytes | Few values per page, which is where a PLAIN offset array beats a DELTA_BINARY_PACKED one |
+
+Across the file: **104 data pages — 88 with DELTA_BINARY_PACKED offset arrays and 16 with
+PLAIN** (all of row group 3), and **181 escape sequences**.
+
+### Verifying a decoder
+
+Read each FSST-encoded column and compare it against the corresponding reference column. The
+values must match exactly, including NULLs and zero-length values.
+
+Note that this file exercises the reader's *tolerance* of both offset array encodings and both
+symbol table types, but a reader that only implements `FSST` and rejects `FSST_16` can still
+pass on four of the six columns — check that all six decode.
+
+### Assumptions this file makes
+
+Two parts of the wire format below are not pinned down by the proposal text at the time of
+writing, so this file reflects one reading of it. Both are recorded here so that an
+implementation whose output diverges knows immediately where to look, rather than
+bisecting bytes:
+
+- **`PageHeader` field id for `symbol_table_page_header`.** The proposal defines the
+  `SYMBOL_TABLE_PAGE` page type and the `SymbolTablePageHeader` struct, but does not say which
+  `PageHeader` field carries the struct. These files use **9**, the next free id after
+  `data_page_header_v2 = 8`. Raised on
+  [parquet-format#531](https://github.com/apache/parquet-format/issues/531).
+- **The `FSST_16` escape framing.** These files write the escape as the marker `65535`
+  followed by the literal byte widened to a little-endian `uint16` — four bytes in total —
+  which is what §5.3's 4x worst-case expansion implies. The 8-bit variant's literal is a
+  single raw byte, so the two variants are asymmetric here, and a reading of marker + 1-byte
+  literal (3x) would also be self-consistent.
+
+### Known gap
+
+**No `FSST_16` column in either file contains an escape sequence**, so `FSST_16` escape
+decoding is not exercised. This is not an oversight in the corpus: the 16-bit tables produced
+by the generating implementation always contain all 256 single-byte symbols, so no input byte
+is ever left to escape. Covering it needs a hand-built page rather than an encoder, and is the
+one corner of the format these files leave to a future addition.
