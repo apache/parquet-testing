@@ -39,9 +39,27 @@ Each example consists of 2 files:
 3. `object_empty` -- Example of object (`basic_type` = 3) with no fields
 3. `object_primitive` -- Example of object with only primitive fields
 4. `object_nested` -- Example of object with other objects in fields 
+4. `object_wide_offsets` -- Example of object with 1-byte field IDs and 2-byte field offsets
+4. `object_wide_field_ids` -- Example of object with 2-byte field IDs and 1-byte field offsets
 5. `array_empty` -- Example of array (`basic_type` = 4) with no elements
 5. `array_primitive` -- Example of array with only primitive elements
 6. `array_nested` -- Example of an with objects and other arrays in the elements
+
+## Objects whose field ID and field offset widths differ
+
+`object_wide_offsets` and `object_wide_field_ids` are the only examples in which
+an object's `field_id_size` and `field_offset_size` differ. In every other object
+example both are 1 byte, so the two `value_header` fields hold the same value and
+a reader that reads them from each other's bit positions still decodes correctly.
+
+* `object_wide_offsets` -- the top-level object has two fields (1-byte field IDs)
+  and more than 256 bytes of field data (2-byte field offsets), giving header
+  byte `0x06`.
+* `object_wide_field_ids` -- 262 distinct field names force 2-byte field IDs,
+  while the object under the `nested` field holds a single small value, so its own
+  field offsets still fit in 1 byte, giving header byte `0x12`. Its enclosing
+  object has 261 fields, which also makes this the only example with `is_large`
+  set to 1 (a 4-byte `num_elements`).
 
 ## Regenerating these files
 
