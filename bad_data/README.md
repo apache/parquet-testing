@@ -26,6 +26,9 @@ These are files used for reproducing various bugs that have been reported.
   stored in dictionary page header is negative.
 * ARROW-RS-GH-6229-LEVELS.parquet: tests a case where a page has insufficient
   repetition levels.
+* ARROW-RS-GH-11261-FLBA-DICT.parquet: test case of https://github.com/apache/arrow-rs/issues/11261
+  where Arrow dictionary values were written using BYTE_ARRAY encodings despite
+  a FIXED_LEN_BYTE_ARRAY schema.
 * ARROW-GH-41321.parquet: test case of https://github.com/apache/arrow/issues/41321
   where decoded rep / def levels is less than num_values in page_header.
 * ARROW-GH-41317.parquet: test case of https://github.com/apache/arrow/issues/41317
