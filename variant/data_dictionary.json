@@ -52,6 +52,34 @@
         "string_field": "Apache Parquet",
         "timestamp_field": "2025-04-16T12:34:56.78"
     },
+    "object_unicode_keys_sorted": {
+        "$": "U+0024",
+        "0": "U+0030",
+        "A": "U+0041",
+        "a": "U+0061",
+        "~": "U+007E",
+        "\u00a2": "U+00A2",
+        "\u20ac": "U+20AC",
+        "\ue000": "U+E000",
+        "\uffff": "U+FFFF",
+        "\ud800\udc00": "U+10000",
+        "\ud83d\ude00": "U+1F600",
+        "\udbff\udfff": "U+10FFFF"
+    },
+    "object_unicode_keys_unsorted": {
+        "$": "U+0024",
+        "0": "U+0030",
+        "A": "U+0041",
+        "a": "U+0061",
+        "~": "U+007E",
+        "\u00a2": "U+00A2",
+        "\u20ac": "U+20AC",
+        "\ue000": "U+E000",
+        "\uffff": "U+FFFF",
+        "\ud800\udc00": "U+10000",
+        "\ud83d\ude00": "U+1F600",
+        "\udbff\udfff": "U+10FFFF"
+    },
     "primitive_binary": "AxM33q2+78r+",
     "primitive_boolean_false": false,
     "primitive_boolean_true": true,
@@ -73,5 +101,5 @@
     "primitive_timestamp_nanos": "2024-11-07T12:33:54.123456789+00:00",
     "primitive_timestampntz_nanos": "2024-11-07T12:33:54.123456789",
     "primitive_uuid": "f24f9b64-81fa-49d1-b74e-8c09a6e31c56",
-    "short_string": "Less than 64 bytes (\u2764\ufe0f with utf8)",
+    "short_string": "Less than 64 bytes (\u2764\ufe0f with utf8)"
 }
