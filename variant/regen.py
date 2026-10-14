@@ -43,6 +43,22 @@ if os.path.exists('spark-warehouse'):
             os.rmdir(os.path.join(root, name))
 
 
+# Some object examples need more distinct field names, or more field data, than
+# is readable as an inline JSON literal, so their JSON is built here and
+# substituted into the SQL below.
+#
+# 260 fields plus a nested object give 262 distinct field names, which forces
+# 2-byte field IDs, while the nested object holds a single small value so its
+# own field offsets still fit in 1 byte. The outer object's 261 fields also make
+# it the only example with is_large = 1 (a 4-byte num_elements).
+object_wide_field_ids_json = "{" + ", ".join(
+    f'"f{i:03d}": {i % 128}' for i in range(260)
+) + ', "nested": {"last": 1}}'
+
+# Two fields keep the field IDs at 1 byte, while more than 256 bytes of field
+# data forces the field offsets to 2 bytes.
+object_wide_offsets_json = '{"padding": "' + "x" * 300 + '", "id": 1}'
+
 # Create a table with variant and insert various types into it
 #
 # This writes data files into spark-warehouse/output
@@ -90,13 +106,21 @@ INSERT INTO T VALUES ('object_empty', parse_json('{}')::Variant);
 INSERT INTO T VALUES ('object_primitive', parse_json('{"int_field" : 1, "double_field": 1.23456789, "boolean_true_field": true, "boolean_false_field": false, "string_field": "Apache Parquet", "null_field": null, "timestamp_field": "2025-04-16T12:34:56.78"}')::Variant);
 INSERT INTO T VALUES ('object_nested', parse_json('{ "id" : 1, "species" : { "name": "lava monster", "population": 6789}, "observation" : { "time": "12:34:56", "location": "In the Volcano", "value" : { "temperature": 123, "humidity": 456 } } }')::Variant);
 
+-- The two examples below are the only objects whose field_id_size and
+-- field_offset_size differ. Every other object example has 1-byte field IDs and
+-- 1-byte field offsets, where the two value_header fields hold the same value,
+-- so a reader that transposes them still decodes correctly.
+INSERT INTO T VALUES ('object_wide_field_ids', parse_json('__OBJECT_WIDE_FIELD_IDS_JSON__')::Variant);
+INSERT INTO T VALUES ('object_wide_offsets', parse_json('__OBJECT_WIDE_OFFSETS_JSON__')::Variant);
+
 -- https://github.com/apache/parquet-testing/issues/77
 -- TODO create example variant objects with fields that non-json types (like timestamp, date, etc)
 -- Casting from "STRUCT<...>" to "VARIANT"" is not yet supported
 -- INSERT INTO T VALUES ('object_primitive', struct(1234.56::Double as double_field, true as boolean_true_field, false as boolean_false_field, '2025-04-16T12:34:56.78'::Timestamp as timestamp_field, 'Apache Parquet' as string_field, null as null_field)::Variant);
---TODO objects with more than 2**8 distinct fields (that require using more than one byte for field offset)
---TODO objects with more than 2**16 distinct fields (that require using more than 2 bytes for field offset)
---TODO objects with more than 2**24 distinct fields (that require using more than 3 bytes for field offset)
+
+-- https://github.com/apache/parquet-testing/issues/78
+--TODO objects with more than 2**16 distinct fields (that require using more than 2 bytes for field IDs)
+--TODO objects with more than 2**24 distinct fields (that require using more than 3 bytes for field IDs)
 
 -------------------------------
 -- Array (basic_type=3)
@@ -115,6 +139,9 @@ INSERT INTO T VALUES ('array_nested', parse_json('[ { "id": 1, "thing": { "names
 DROP TABLE IF EXISTS output;
 CREATE TABLE output AS SELECT name, variant_col, to_json(variant_col) as json_col FROM T;
 """
+sql = sql.replace("__OBJECT_WIDE_FIELD_IDS_JSON__", object_wide_field_ids_json)
+sql = sql.replace("__OBJECT_WIDE_OFFSETS_JSON__", object_wide_offsets_json)
+
 for statement in sql.split("\n"):
     statement = statement.strip()
     if not statement or statement.startswith("--"):
