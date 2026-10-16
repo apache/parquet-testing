@@ -60,10 +60,12 @@ The file is uncompressed. A blank cell is a null child.
 | 11 |  |  |  |  | `SHA-256:2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824` | `68656c6c6f` | `hello` |
 | 12 | `s3://bucket/images/cat.jpg` |  |  |  | `ETAG:"9b2cf535f27731c974343645a3985328"` |  | the whole object |
 | 13 | (the group is null) | | | | | | nothing |
+| 14 |  |  |  |  | `UNKNOWN:0123456789abcdef` | `68656c6c6f` | `hello`; a reader that verifies checksums skips this one |
 
 Rows 8 to 11 carry one checksum per recomputable algorithm over the inline bytes `hello`,
 so a reader can verify each digest. Row 12's `ETAG` is opaque and refers to an object that
-does not exist.
+does not exist. Row 14's algorithm is not one the specification recognizes, and its digest
+matches nothing.
 
 ## Generation
 
@@ -93,7 +95,8 @@ List<PqFile> rows = Arrays.asList(
         PqFile.inline(hello).withChecksum("CRC32C:9a71bb4c"),
         PqFile.inline(hello).withChecksum(sha256),
         PqFile.external("s3://bucket/images/cat.jpg").withChecksum("ETAG:\"9b2cf535f27731c974343645a3985328\""),
-        null);
+        null,
+        PqFile.inline(hello).withChecksum("UNKNOWN:0123456789abcdef"));
 WriterConfig config = WriterConfig.builder().codec(CompressionCodec.UNCOMPRESSED).build();
 try (ParquetFileWriter writer = ParquetFileWriter.create(OutputFile.of(path), schema, config)) {
     for (int i = 0; i < rows.size(); i++) {
