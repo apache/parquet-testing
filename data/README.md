@@ -73,7 +73,7 @@ TODO: Document what each file is in the table above.
 
 ## Encrypted Files
 
-Tests files with .parquet.encrypted suffix are encrypted using Parquet Modular Encryption.
+Test files with a `.parquet.encrypted` suffix are encrypted using Parquet Modular Encryption.
 
 A detailed description of the Parquet Modular Encryption specification can be found here:
 ```
@@ -81,15 +81,16 @@ A detailed description of the Parquet Modular Encryption specification can be fo
 ```
 
 Following are the keys and key ids (when using key\_retriever) used to encrypt
-the encrypted columns and footer in all the encrypted files:
+the encrypted columns and footer in all the encrypted files.
+Key values are the ASCII encoding of the string values shown:
 * Encrypted/Signed Footer:
-  * key:   {0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5}
+  * key:   "0123456789012345"
   * key_id: "kf"
 * Encrypted column named double_field (including column and offset index):
-  * key:  {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,0}
+  * key:  "1234567890123450"
   * key_id: "kc1"
 * Encrypted column named float_field (including column and offset index):
-  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,1}
+  * key: "1234567890123451"
   * key_id: "kc2"
 
 The following files are encrypted with AAD prefix "tester":
@@ -100,8 +101,8 @@ The following files are encrypted with AAD prefix "tester":
 A sample that reads and checks these files can be found at the following tests
 in Parquet C++:
 ```
-cpp/src/parquet/encryption/read-configurations-test.cc
-cpp/src/parquet/encryption/test-encryption-util.h
+cpp/src/parquet/encryption/read_configurations_test.cc
+cpp/src/parquet/encryption/test_encryption_util.h
 ```
 
 The `external_key_material_java.parquet.encrypted` file was encrypted using parquet-mr with
@@ -115,31 +116,31 @@ on `double_field` and `float_field`.
 
 The files in `data/aes256` were encrypted with the following keys and key ids (when using key\_retriever) using parquet-mr:
 * Encrypted/Signed Footer:
-  * key:   {0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1}
+  * key:   "01234567890123456789012345678901"
   * key_id: "kf"
 * Encrypted column named double_field (including column and offset index):
-  * key:  {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2}
+  * key:  "12345678901234567890123456789012"
   * key_id: "kc1"
 * Encrypted column named float_field (including column and offset index):
-  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,3}
+  * key: "12345678901234567890123456789013"
   * key_id: "kc2"
 * Encrypted column named boolean_field (including column and offset index):
-  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,4}
+  * key: "12345678901234567890123456789014"
   * key_id: "kc3"
 * Encrypted column named int32_field (including column and offset index):
-  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,5}
+  * key: "12345678901234567890123456789015"
   * key_id: "kc4"
 * Encrypted column named ba_field (including column and offset index):
-  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,6}
+  * key: "12345678901234567890123456789016"
   * key_id: "kc5"
 * Encrypted column named flba_field (including column and offset index):
-  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,7}
+  * key: "12345678901234567890123456789017"
   * key_id: "kc6"
 * Encrypted column named int64_field (including column and offset index):
-  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,8}
+  * key: "12345678901234567890123456789018"
   * key_id: "kc7"
 * Encrypted column named int96_field (including column and offset index):
-  * key: {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,9}
+  * key: "12345678901234567890123456789019"
   * key_id: "kc8"
 
 The corresponding schema in Java is:
