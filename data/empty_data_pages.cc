@@ -15,17 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-// Writes empty_data_pages.parquet: a single required INT64 column of three rows, whose
-// column chunk contains data pages without values (num_values = 0), the first page and
-// another one in the middle. Readers must skip these pages instead of treating them as
-// the end of the column chunk.
+// Writes empty_data_pages_v1.parquet and empty_data_pages_v2.parquet: a single required
+// INT64 column of three rows, whose column chunk contains data pages without values
+// (num_values = 0), the first page and another one in the middle. Readers must skip these
+// pages instead of treating them as the end of the column chunk.
 //
 //   message schema {
 //     required int64 int64;
 //   }
 //
-// The column chunk has four DataPageV1 pages, uncompressed, PLAIN encoded and without
-// statistics, holding the values [], [1, 2], [], [3]. The file has no page index, since
+// The column chunk has four data pages, DataPageV1 in empty_data_pages_v1.parquet and
+// DataPageV2 in empty_data_pages_v2.parquet, uncompressed, PLAIN encoded and without
+// statistics, holding the values [], [1, 2], [], [3]. The files have no page index, since
 // the OffsetIndex requires strictly increasing first_row_index values, which a page
 // without values doesn't have.
 //
@@ -53,14 +54,27 @@
 
 using namespace parquet;
 
-using Pages = std::vector<std::shared_ptr<DataPageV1>>;
+using Pages = std::vector<std::shared_ptr<DataPage>>;
 
 // DataPageV1 of PLAIN encoded values of a required INT64 column
 auto Int64PageV1(std::vector<int64_t> values) {
   auto num_values = static_cast<int32_t>(values.size());
   auto buffer = ::arrow::Buffer::FromVector(std::move(values));
-  return std::make_shared<DataPageV1>(buffer, num_values, Encoding::PLAIN, Encoding::RLE,
-                                      Encoding::RLE, buffer->size());
+  return std::make_shared<DataPageV1>(buffer, num_values, Encoding::PLAIN,
+                                      /*definition_level_encoding=*/Encoding::RLE,
+                                      /*repetition_level_encoding=*/Encoding::RLE,
+                                      buffer->size());
+}
+
+// DataPageV2 of PLAIN encoded values of a required INT64 column, so without levels
+auto Int64PageV2(std::vector<int64_t> values) {
+  auto num_values = static_cast<int32_t>(values.size());
+  auto buffer = ::arrow::Buffer::FromVector(std::move(values));
+  return std::make_shared<DataPageV2>(buffer, num_values, /*num_nulls=*/0,
+                                      /*num_rows=*/num_values, Encoding::PLAIN,
+                                      /*definition_levels_byte_length=*/0,
+                                      /*repetition_levels_byte_length=*/0,
+                                      buffer->size());
 }
 
 // Writes the pages of a column chunk as they are, without any further encoding, and
@@ -103,6 +117,10 @@ void WriteInt64ColumnFile(const std::string& path, const Pages& pages) {
 int main() {
   // The values 1, 2, 3 in the pages [], [1, 2], [], [3], where [] is a data page without
   // values
-  WriteInt64ColumnFile("empty_data_pages.parquet", {Int64PageV1({}), Int64PageV1({1, 2}),
-                                                    Int64PageV1({}), Int64PageV1({3})});
+  WriteInt64ColumnFile(
+      "empty_data_pages_v1.parquet",
+      {Int64PageV1({}), Int64PageV1({1, 2}), Int64PageV1({}), Int64PageV1({3})});
+  WriteInt64ColumnFile(
+      "empty_data_pages_v2.parquet",
+      {Int64PageV2({}), Int64PageV2({1, 2}), Int64PageV2({}), Int64PageV2({3})});
 }
