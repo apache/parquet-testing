@@ -15,30 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-// Writes empty_data_pages_v1.parquet and empty_data_pages_v2.parquet: a single required
-// INT64 column of three rows, whose column chunk contains data pages without values
-// (num_values = 0), the first page and another one in the middle. Readers must skip these
-// pages instead of treating them as the end of the column chunk.
-//
-//   message schema {
-//     required int64 int64;
-//   }
-//
-// The column chunk has four data pages, DataPageV1 in empty_data_pages_v1.parquet and
-// DataPageV2 in empty_data_pages_v2.parquet, uncompressed, PLAIN encoded and without
-// statistics, holding the values [], [1, 2], [], [3]. The files have no page index, since
-// the OffsetIndex requires strictly increasing first_row_index values, which a page
-// without values doesn't have.
-//
-// Writers only emit data pages holding values, so the pages are written one by one with
-// the Arrow C++ PageWriter API (parquet-cpp-arrow version 27.0.0-SNAPSHOT). Compile
-// against an Arrow C++ installation in $ARROW_HOME and run it in this directory:
-//
-// clang-format off
-//   c++ -std=c++20 empty_data_pages.cc -I$ARROW_HOME/include -L$ARROW_HOME/lib -lparquet -larrow -Wl,-rpath,$ARROW_HOME/lib -o empty_data_pages
-//   ./empty_data_pages
-// clang-format on
+// Writes empty_data_pages_v1.parquet and empty_data_pages_v2.parquet, see
+// empty_data_pages.md
 
+#include <cstdint>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -115,8 +96,6 @@ void WriteInt64ColumnFile(const std::string& path, const Pages& pages) {
 }
 
 int main() {
-  // The values 1, 2, 3 in the pages [], [1, 2], [], [3], where [] is a data page without
-  // values
   WriteInt64ColumnFile(
       "empty_data_pages_v1.parquet",
       {Int64PageV1({}), Int64PageV1({1, 2}), Int64PageV1({}), Int64PageV1({3})});
