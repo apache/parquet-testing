@@ -49,12 +49,12 @@ in `empty_data_pages_v1.parquet` and DataPageV2 in `empty_data_pages_v2.parquet`
 In the DataPageV2 headers, `num_rows` equals `num_values` and `num_nulls` is 0.
 
 The files have no page index, since the OffsetIndex requires strictly increasing
-`first_row_index` values, which a page without values doesn't have.
+`first_row_index` values, while a page without values has the same one as the next page.
 
 ## How it was generated
 
-Writers only emit data pages holding values, so [empty_data_pages.cc](empty_data_pages.cc) writes
-the pages one by one with the Arrow C++ `PageWriter` API (parquet-cpp-arrow 27.0.0-SNAPSHOT).
+Arrow C++ writers only emit data pages holding values, so [empty_data_pages.cc](empty_data_pages.cc)
+writes the pages one by one with its `PageWriter` API (parquet-cpp-arrow 27.0.0-SNAPSHOT).
 Compile it against an Arrow C++ installation in `$ARROW_HOME` and run it in this directory:
 
 ```
