@@ -23,9 +23,6 @@ A single required INT64 column of three rows, whose column chunk contains data p
 values (`num_values = 0`): the first page and one in the middle. Readers must skip these pages
 instead of treating them as the end of the column chunk, and read `1, 2, 3`.
 
-Such pages are written by parquet-rs 58.1.0 to 60.1.0 with content-defined chunking enabled
-([apache/arrow-rs#10929](https://github.com/apache/arrow-rs/issues/10929)).
-
 ## Schema
 
 ```
@@ -54,8 +51,9 @@ The files have no page index, since the OffsetIndex requires strictly increasing
 ## How it was generated
 
 Arrow C++ writers only emit data pages holding values, so [empty_data_pages.cc](empty_data_pages.cc)
-writes the pages one by one with its `PageWriter` API (parquet-cpp-arrow 27.0.0-SNAPSHOT).
-Compile it against an Arrow C++ installation in `$ARROW_HOME` and run it in this directory:
+writes the pages one by one with its `PageWriter` API. Later Arrow C++ versions may reject such
+pages, so compile it against an Arrow C++ 26.0.0 installation in `$ARROW_HOME` and run it in this
+directory:
 
 ```
 c++ -std=c++20 empty_data_pages.cc -I$ARROW_HOME/include -L$ARROW_HOME/lib -lparquet -larrow -Wl,-rpath,$ARROW_HOME/lib -o empty_data_pages
