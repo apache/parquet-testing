@@ -70,6 +70,8 @@
 | flba12_timestamp.parquet | Three `FIXED_LEN_BYTE_ARRAY(12)` columns annotated with `TIMESTAMP`. See [flba12_timestamp.md](flba12_timestamp.md) for details. |
 | empty_data_pages_v1.parquet | A required INT64 column with DataPageV1, whose column chunk starts with a data page without values (`num_values = 0`) and has another one in the middle. Readers must skip these pages and read three rows. See [empty_data_pages.md](empty_data_pages.md) for details. |
 | empty_data_pages_v2.parquet | Same as `empty_data_pages_v1.parquet`, but with DataPageV2. See [empty_data_pages.md](empty_data_pages.md) for details. |
+| file_reference.parquet | One `FILE`-annotated group holding every form of reference the specification defines, one per row: inline bytes, a whole external object, a prefix, an offset range, inline bytes with a locator, a relative URI, each checksum algorithm, a null group, and a checksum with an unknown algorithm. See [file_reference.md](file_reference.md) for details. |
+| file_reference_shapes.parquet | `FILE`-annotated groups defining a subset of the children, children out of the specification's order, a `REQUIRED` group, and `FILE` groups as list elements and map values. See [file_reference_shapes.md](file_reference_shapes.md) for details. |
 
 TODO: Document what each file is in the table above.
 
