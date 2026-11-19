@@ -21,6 +21,7 @@
 
 | File                                         | Description                                                                                                                                                      |
 |----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| complex_map_key.parquet                      | Contains a map with an array key.                                                                                                                                |
 | delta_byte_array.parquet                     | string columns with DELTA_BYTE_ARRAY encoding. See [delta_byte_array.md](delta_byte_array.md) for details.                                                       |
 | delta_length_byte_array.parquet              | string columns with DELTA_LENGTH_BYTE_ARRAY encoding.                                                                                                            |
 | delta_binary_packed.parquet                  | INT32 and INT64 columns with DELTA_BINARY_PACKED encoding. See [delta_binary_packed.md](delta_binary_packed.md) for details.                                     |
